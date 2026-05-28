@@ -99,7 +99,9 @@ body {
 /* PREVIEW */
 .sc-preview { display:flex; flex-direction:column; gap:16px; }
 .sc-stage {
-  flex:1; min-height:380px; background:var(--bg-card); border:1px solid var(--border-glass);
+  flex:1; min-height:380px; background: #f8fafc; border:1px solid rgba(0, 0, 0, 0.08);
+  background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+  background-size: 16px 16px;
   border-radius:24px; display:flex; flex-direction:column; align-items:center;
   justify-content:center; gap:24px; position:relative; overflow:hidden;
 }
@@ -109,16 +111,16 @@ body {
   border-radius:24px; transition:box-shadow 0.15s, border-radius 0.3s;
   border: 1px solid rgba(255, 255, 255, 0.6);
 }
-.sc-label { font-family:'Outfit',sans-serif; font-weight:700; color:var(--text-muted); letter-spacing:2px; }
+.sc-label { font-family:'Outfit',sans-serif; font-weight:700; color: #64748b; letter-spacing:2px; }
 
 .backdrop-demo {
   text-align:center; display:flex; flex-direction:column; gap:8px; align-items:center;
-  padding:12px 24px; border-radius:16px; border:1px dashed var(--border-glass); background:rgba(255,255,255,0.02);
+  padding:12px 24px; border-radius:16px; border:1px dashed rgba(0, 0, 0, 0.12); background:rgba(0, 0, 0, 0.02);
 }
 .backdrop-box {
   padding:14px 28px; border-radius:20px; font-family:'Fira Code',monospace; font-size:0.85rem;
-  font-weight:700; color:#fff; background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.06);
+  font-weight:700; color:#0f172a; background:rgba(255, 255, 255, 0.3);
+  border:1px solid rgba(0, 0, 0, 0.08);
   backdrop-filter:blur(12px);
   transition:backdrop-filter 0.3s, -webkit-backdrop-filter 0.3s, filter 0.3s;
 }
