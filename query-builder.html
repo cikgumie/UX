@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query Builder — Media Query Generator</title>
+    <meta name="description"
+        content="Media Query Generator — Drag breakpoint handles, preview responsive layouts, export production-ready @media CSS blocks.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- TailwindCSS v3 CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #080a14;
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(rgba(139, 92, 246, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 92, 246, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .qb-header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .qb-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a78bfa, #7c3aed, #6d28d9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .qb-header h1 span {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .qb-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .controls-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 16px;
+        }
+
+        .control-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .control-label span {
+            color: #a78bfa;
+        }
+
+        .control-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            border-radius: 4px;
+            background: rgba(139, 92, 246, 0.2);
+            outline: none;
+        }
+
+        .control-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #7c3aed;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+        }
+
+        .control-select {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.3);
+            color: #e2e8f0;
+            font-size: 0.75rem;
+            font-family: 'Fira Code', monospace;
+            outline: none;
+        }
+
+        .action-btn {
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: #fff;
+        }
+
+        .action-btn.primary:hover {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .preview-area {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Breakpoint Visualizer */
+        .bp-visualizer {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+        }
+
+        .bp-ruler {
+            position: relative;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            margin: 12px 0 20px;
+            overflow: hidden;
+        }
+
+        .bp-track {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .bp-segment {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.55rem;
+            font-family: 'Fira Code', monospace;
+            font-weight: 700;
+            border-right: 2px dashed rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .bp-segment:last-child {
+            border-right: none;
+        }
+
+        .bp-segment .bp-label {
+            position: absolute;
+            bottom: -18px;
+            font-size: 0.5rem;
+            color: #64748b;
+            white-space: nowrap;
+        }
+
+        .bp-segment .bp-range {
+            position: absolute;
+            top: -18px;
+            font-size: 0.5rem;
+            color: #94a3b8;
+            white-space: nowrap;
+        }
+
+        /* Live Preview */
+        .live-preview {
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px dashed rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            min-height: 120px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .live-preview .preview-label {
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            font-size: 0.55rem;
+            font-family: 'Fira Code', monospace;
+            color: #64748b;
+        }
+
+        .preview-grid {
+            display: grid;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .preview-grid-item {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 8px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        /* Width indicator */
+        .width-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .width-indicator span {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.65rem;
+            color: #a78bfa;
+        }
+
+        .width-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(139, 92, 246, 0.15);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .width-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7c3aed, #a78bfa);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Code output */
+        .code-output {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.65rem;
+            color: #64748b;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 0.75rem;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #a78bfa;
+        }
+
+        .code-block {
+            padding: 14px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.7rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+            white-space: pre-wrap;
+            min-height: 100px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .code-block .cmt {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .code-block .sel {
+            color: #f472b6;
+        }
+
+        .code-block .prop {
+            color: #818cf8;
+        }
+
+        .code-block .val {
+            color: #fbbf24;
+        }
+
+        .code-block .num {
+            color: #34d399;
+        }
+
+        .code-block .at {
+            color: #06b6d4;
+        }
+
+        /* Resize handle simulation */
+        .viewport-sim {
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .viewport-sim input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            border-radius: 4px;
+            background: rgba(139, 92, 246, 0.2);
+            outline: none;
+        }
+
+        .viewport-sim input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #7c3aed;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Breakpoint chips */
+        .bp-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .bp-chip {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.55rem;
+            font-weight: 700;
+            font-family: 'Fira Code', monospace;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: transparent;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .bp-chip:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: #a78bfa;
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        .bp-chip.active {
+            background: rgba(139, 92, 246, 0.15);
+            color: #fff;
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .bp-chip.mobile {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .bp-chip.mobile:hover {
+            background: rgba(16, 185, 129, 0.1);
+            color: #34d399;
+        }
+
+        .bp-chip.mobile.active {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .bp-chip.tablet {
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .bp-chip.tablet:hover {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .bp-chip.tablet.active {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .bp-chip.desktop {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .bp-chip.desktop:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+        }
+
+        .bp-chip.desktop.active {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .qb-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+
+    <!-- Navigation -->
+    <nav class="max-w-[1200px] w-full mx-auto px-6 pt-6 flex justify-between items-center relative z-10">
+        <a href="index.html"
+            class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to UI Craft Labs
+        </a>
+        <span
+            class="text-xs font-mono px-3 py-1 rounded-full bg-slate-900/60 border border-violet-500/20 text-violet-400">Lab
+            09: Query Builder</span>
+    </nav>
+
+    <!-- Header -->
+    <header class="qb-header">
+        <p class="font-mono text-xs uppercase tracking-[4px] text-violet-400 mb-2">Media Query Generator Lab</p>
+        <h1>Query <span>Builder</span></h1>
+        <p class="text-slate-400 text-sm max-w-lg mx-auto mt-3">Drag breakpoint handles, preview responsive layouts,
+            export
+            production-ready @media CSS blocks.</p>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="qb-container">
+        <!-- LEFT: Controls -->
+        <section class="controls-panel">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono mb-4">Breakpoint Controls
+            </h2>
+
+            <!-- Breakpoint presets -->
+            <div class="control-group">
+                <label class="control-label">Device Presets</label>
+                <div class="bp-chips">
+                    <button class="bp-chip mobile active" data-bp="mobile">📱 Mobile</button>
+                    <button class="bp-chip tablet" data-bp="tablet">📟 Tablet</button>
+                    <button class="bp-chip desktop" data-bp="desktop">💻 Desktop</button>
+                    <button class="bp-chip" data-bp="wide">🖥️ Wide</button>
+                </div>
+            </div>
+
+            <!-- Viewport Simulator -->
+            <div class="control-group">
+                <label class="control-label">Viewport Width <span id="vp-label">768px</span></label>
+                <div class="viewport-sim">
+                    <input type="range" id="vp-slider" min="320" max="1440" value="768" step="1">
+                </div>
+            </div>
+
+            <!-- Breakpoint Min -->
+            <div class="control-group">
+                <label class="control-label">Min Width <span id="min-label">768px</span></label>
+                <input type="range" id="min-slider" class="control-slider" min="0" max="1200" value="768" step="8">
+            </div>
+
+            <!-- Breakpoint Max -->
+            <div class="control-group">
+                <label class="control-label">Max Width <span id="max-label">none</span></label>
+                <input type="range" id="max-slider" class="control-slider" min="0" max="1440" value="0" step="8">
+            </div>
+
+            <!-- Rule type -->
+            <div class="control-group">
+                <label class="control-label">Media Type</label>
+                <select id="media-type" class="control-select">
+                    <option value="screen">screen</option>
+                    <option value="all">all</option>
+                    <option value="print">print</option>
+                </select>
+            </div>
+
+            <!-- Columns -->
+            <div class="control-group">
+                <label class="control-label">Columns <span id="mq-cols-label">3</span></label>
+                <input type="range" id="mq-cols-slider" class="control-slider" min="1" max="6" value="3" step="1">
+            </div>
+
+            <!-- Background -->
+            <div class="control-group">
+                <label class="control-label">Accent Color</label>
+                <input type="color" id="mq-color" class="control-select" value="#7c3aed"
+                    style="height:36px;padding:2px;cursor:pointer;">
+            </div>
+        </section>
+
+        <!-- RIGHT: Preview + Code -->
+        <section class="preview-area">
+            <!-- Visualizer -->
+            <div class="bp-visualizer">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono">Breakpoint
+                        Ruler</span>
+                    <span class="text-xs font-mono text-slate-600" id="current-bp-label">Current: 768px</span>
+                </div>
+
+                <div class="bp-ruler">
+                    <div class="bp-track" id="bp-track">
+                        <div class="bp-segment" id="bp-mobile"
+                            style="left:0%;width:33%;background:rgba(16,185,129,0.08);">
+                            <span class="bp-label" style="left:50%;transform:translateX(-50%)">Mobile</span>
+                            <span class="bp-range" style="left:50%;transform:translateX(-50%)">320-767px</span>
+                        </div>
+                        <div class="bp-segment" id="bp-tablet"
+                            style="left:33%;width:24%;background:rgba(245,158,11,0.08);">
+                            <span class="bp-label" style="left:50%;transform:translateX(-50%)">Tablet</span>
+                            <span class="bp-range" style="left:50%;transform:translateX(-50%)">768-1023px</span>
+                        </div>
+                        <div class="bp-segment" id="bp-desktop"
+                            style="left:57%;width:28%;background:rgba(59,130,246,0.08);">
+                            <span class="bp-label" style="left:50%;transform:translateX(-50%)">Desktop</span>
+                            <span class="bp-range" style="left:50%;transform:translateX(-50%)">1024-1279px</span>
+                        </div>
+                        <div class="bp-segment" id="bp-wide"
+                            style="left:85%;width:15%;background:rgba(139,92,246,0.08);">
+                            <span class="bp-label" style="left:50%;transform:translateX(-50%)">Wide</span>
+                            <span class="bp-range" style="left:50%;transform:translateX(-50%)">1280px+</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Viewport indicator -->
+                <div class="width-indicator">
+                    <span id="width-label">768px</span>
+                    <div class="width-bar">
+                        <div class="width-bar-fill" id="width-bar-fill" style="width:53%"></div>
+                    </div>
+                </div>
+
+                <!-- Active breakpoint indicator -->
+                <div id="active-bp-indicator"
+                    class="text-center text-xs font-mono text-emerald-400 bg-emerald-500/10 rounded-lg py-2 px-3 mb-3">
+                    📟 Tablet Breakpoint Active
+                </div>
+            </div>
+
+            <!-- Live Preview -->
+            <div class="live-preview" id="live-preview">
+                <span class="preview-label">Preview <span id="preview-cols-label">3 cols</span></span>
+                <div class="preview-grid" id="preview-grid"></div>
+            </div>
+
+            <!-- CODE OUTPUT -->
+            <div class="code-output">
+                <div class="code-header">
+                    <span>@media CSS</span>
+                    <button id="copy-css-btn" class="copy-btn" title="Copy CSS">📋 Copy</button>
+                </div>
+                <pre class="code-block" id="code-block">/* Adjust breakpoints to generate @media query */</pre>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const vpSlider = document.getElementById('vp-slider');
+            const vpLabel = document.getElementById('vp-label');
+            const minSlider = document.getElementById('min-slider');
+            const minLabel = document.getElementById('min-label');
+            const maxSlider = document.getElementById('max-slider');
+            const maxLabel = document.getElementById('max-label');
+            const mediaType = document.getElementById('media-type');
+            const colsSlider = document.getElementById('mq-cols-slider');
+            const colsLabel = document.getElementById('mq-cols-label');
+            const mqColor = document.getElementById('mq-color');
+            const codeBlock = document.getElementById('code-block');
+            const copyBtn = document.getElementById('copy-css-btn');
+            const bpChips = document.querySelectorAll('.bp-chip');
+            const widthLabel = document.getElementById('width-label');
+            const widthBarFill = document.getElementById('width-bar-fill');
+            const currentBpLabel = document.getElementById('current-bp-label');
+            const activeBpIndicator = document.getElementById('active-bp-indicator');
+            const previewGrid = document.getElementById('preview-grid');
+            const previewColsLabel = document.getElementById('preview-cols-label');
+
+            const DEVICE_PRESETS = {
+                mobile: 375,
+                tablet: 768,
+                desktop: 1024,
+                wide: 1280
+            };
+
+            function getBreakpointName(width) {
+                if (width < 768) return 'mobile';
+                if (width < 1024) return 'tablet';
+                if (width < 1280) return 'desktop';
+                return 'wide';
+            }
+
+            function getBreakpointLabel(name) {
+                const labels = { mobile: '📱 Mobile', tablet: '📟 Tablet', desktop: '💻 Desktop', wide: '🖥️ Wide' };
+                return labels[name] || name;
+            }
+
+            function updateAll() {
+                const vp = parseInt(vpSlider.value);
+                const min = parseInt(minSlider.value);
+                const max = parseInt(maxSlider.value);
+                const cols = parseInt(colsSlider.value);
+                const color = mqColor.value;
+                const mType = mediaType.value;
+
+                // Update labels
+                vpLabel.textContent = `${vp}px`;
+                minLabel.textContent = min > 0 ? `${min}px` : 'none';
+                maxLabel.textContent = max > 0 ? `${max}px` : 'none';
+                colsLabel.textContent = cols;
+
+                // Width indicator
+                widthLabel.textContent = `${vp}px`;
+                const pct = ((vp - 320) / (1440 - 320)) * 100;
+                widthBarFill.style.width = `${Math.max(5, Math.min(100, pct))}%`;
+
+                // Current breakpoint
+                const bpName = getBreakpointName(vp);
+                currentBpLabel.textContent = `Current: ${vp}px (${getBreakpointLabel(bpName)})`;
+
+                // Active indicator
+                const bpLabels = {
+                    mobile: '📱 Mobile Breakpoint Active',
+                    tablet: '📟 Tablet Breakpoint Active',
+                    desktop: '💻 Desktop Breakpoint Active',
+                    wide: '🖥️ Wide Breakpoint Active'
+                };
+                const indicatorColors = {
+                    mobile: 'text-emerald-400 bg-emerald-500/10',
+                    tablet: 'text-amber-400 bg-amber-500/10',
+                    desktop: 'text-blue-400 bg-blue-500/10',
+                    wide: 'text-violet-400 bg-violet-500/10'
+                };
+                activeBpIndicator.textContent = bpLabels[bpName];
+                activeBpIndicator.className =
+                    `text-center text-xs font-mono rounded-lg py-2 px-3 mb-3 ${indicatorColors[bpName] || 'text-slate-400 bg-slate-500/10'}`;
+
+                // Highlight ruler segment
+                document.querySelectorAll('.bp-segment').forEach(el => el.style.borderColor = 'rgba(255,255,255,0.1)');
+                const segmentMap = { mobile: 'bp-mobile', tablet: 'bp-tablet', desktop: 'bp-desktop', wide: 'bp-wide' };
+                const activeSegment = document.getElementById(segmentMap[bpName]);
+                if (activeSegment) activeSegment.style.borderColor = color;
+
+                // Update preview grid
+                previewColsLabel.textContent = `${cols} cols`;
+                previewGrid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+                previewGrid.style.gap = `${8}px`;
+
+                // Smaller grid for mobile
+                if (vp < 768 && cols > 2) {
+                    previewGrid.style.gridTemplateColumns = `repeat(${Math.min(cols, 2)}, 1fr)`;
+                    previewColsLabel.textContent = `${Math.min(cols, 2)} cols (responsive)`;
+                }
+
+                previewGrid.innerHTML = '';
+                const itemCount = Math.min(cols * 2, 8);
+                for (let i = 0; i < itemCount; i++) {
+                    const item = document.createElement('div');
+                    item.className = 'preview-grid-item';
+                    item.style.background =
+                        `linear-gradient(135deg, ${color}44, ${color}22)`;
+                    item.style.borderColor = `${color}33`;
+                    item.textContent = `${i + 1}`;
+                    previewGrid.appendChild(item);
+                }
+
+                // Live preview border
+                document.getElementById('live-preview').style.borderColor = `${color}44`;
+
+                updateCode(min, max, cols, color, mType);
+            }
+
+            function updateCode(min, max, cols, color, mType) {
+                let mediaQuery = `@media ${mType}`;
+                let conditions = [];
+                if (min > 0) conditions.push(`min-width: ${min}px`);
+                if (max > 0) conditions.push(`max-width: ${max}px`);
+
+                if (conditions.length > 0) {
+                    mediaQuery += ` and (${conditions.join(') and (')})`;
+                }
+
+                const hexColor = color;
+                const rgb = hexToRgb(color);
+
+                codeBlock.innerHTML = `<span class="cmt">/* Generated by Query Builder */</span>
+
+<span class="at">${mediaQuery}</span> {
+  <span class="sel">.container</span> {
+    <span class="prop">grid-template-columns</span>: <span class="val">repeat(${cols}, 1fr)</span>;
+    <span class="prop">gap</span>: <span class="num">8px</span>;
+  }
+  
+  <span class="sel">.card</span> {
+    <span class="prop">background</span>: <span class="val">${hexColor}</span>;
+    <span class="prop">padding</span>: <span class="num">12px</span>;
+  }
+}
+
+<span class="cmt">/* Viewport: ${parseInt(vpSlider.value)}px → ${getBreakpointLabel(getBreakpointName(parseInt(vpSlider.value)))} */</span>`;
+            }
+
+            function hexToRgb(hex) {
+                const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '139, 92, 246';
+            }
+
+            // Device presets
+            bpChips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    bpChips.forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    const bp = chip.dataset.bp;
+                    const width = DEVICE_PRESETS[bp];
+                    vpSlider.value = width;
+
+                    // Auto-set min/max based on preset
+                    if (bp === 'mobile') {
+                        minSlider.value = 320;
+                        maxSlider.value = 767;
+                    } else if (bp === 'tablet') {
+                        minSlider.value = 768;
+                        maxSlider.value = 1023;
+                    } else if (bp === 'desktop') {
+                        minSlider.value = 1024;
+                        maxSlider.value = 1279;
+                    } else if (bp === 'wide') {
+                        minSlider.value = 1280;
+                        maxSlider.value = 0;
+                    }
+
+                    updateAll();
+                });
+            });
+
+            // Sliders
+            vpSlider.addEventListener('input', updateAll);
+            minSlider.addEventListener('input', updateAll);
+            maxSlider.addEventListener('input', updateAll);
+            colsSlider.addEventListener('input', updateAll);
+            mqColor.addEventListener('input', updateAll);
+            mediaType.addEventListener('change', updateAll);
+
+            // Copy
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    const raw = codeBlock.textContent || codeBlock.innerText;
+                    navigator.clipboard.writeText(raw).then(() => {
+                        copyBtn.textContent = '✅ Copied!';
+                        setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
+                    });
+                });
+            }
+
+            // Init
+            updateAll();
+        });
+    </script>
+</body>
+
+</html>

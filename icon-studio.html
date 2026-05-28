@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icon Studio — SVG Icon Editor</title>
+    <meta name="description"
+        content="SVG Icon editor with stroke/color controls, export as data-uri, React/Vue component strings.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- TailwindCSS v3 CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #080a14;
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(rgba(139, 92, 246, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 92, 246, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .studio-header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .studio-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a78bfa, #7c3aed, #6d28d9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .studio-header h1 span {
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .studio-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Controls */
+        .controls-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 16px;
+        }
+
+        .control-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .control-label span {
+            color: #a78bfa;
+        }
+
+        .control-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            border-radius: 4px;
+            background: rgba(139, 92, 246, 0.2);
+            outline: none;
+        }
+
+        .control-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #7c3aed;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+        }
+
+        .control-select {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.3);
+            color: #e2e8f0;
+            font-size: 0.75rem;
+            font-family: 'Fira Code', monospace;
+            outline: none;
+        }
+
+        .color-input {
+            width: 100%;
+            height: 36px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            padding: 2px;
+        }
+
+        .action-btn {
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: #fff;
+        }
+
+        .action-btn.primary:hover {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Preview Area */
+        .preview-area {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .icon-stage {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 24px;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-display {
+            width: 160px;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 20px;
+            border: 1px dashed rgba(139, 92, 246, 0.15);
+        }
+
+        .icon-display svg {
+            width: 80px;
+            height: 80px;
+            transition: all 0.3s ease;
+        }
+
+        .icon-presets {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .icon-preset-btn {
+            padding: 6px 8px;
+            border-radius: 8px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: transparent;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .icon-preset-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .icon-preset-btn:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: #a78bfa;
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        .icon-preset-btn.active {
+            background: rgba(139, 92, 246, 0.15);
+            color: #fff;
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        /* Export tabs */
+        .export-tabs {
+            display: flex;
+            gap: 4px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 3px;
+        }
+
+        .export-tab {
+            flex: 1;
+            padding: 6px 10px;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            font-size: 0.6rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .export-tab.active {
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+        }
+
+        /* Code output */
+        .code-output {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.65rem;
+            color: #64748b;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 0.75rem;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #a78bfa;
+        }
+
+        .code-block {
+            padding: 14px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.7rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+            white-space: pre-wrap;
+            min-height: 80px;
+            max-height: 160px;
+            overflow-y: auto;
+        }
+
+        .code-block .cmt {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .code-block .tag {
+            color: #f472b6;
+        }
+
+        .code-block .attr {
+            color: #818cf8;
+        }
+
+        .code-block .val {
+            color: #fbbf24;
+        }
+
+        .code-block .str {
+            color: #34d399;
+        }
+
+        @media (max-width: 768px) {
+            .studio-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+
+    <!-- Navigation -->
+    <nav class="max-w-[1200px] w-full mx-auto px-6 pt-6 flex justify-between items-center relative z-10">
+        <a href="index.html"
+            class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to UI Craft Labs
+        </a>
+        <span
+            class="text-xs font-mono px-3 py-1 rounded-full bg-slate-900/60 border border-violet-500/20 text-violet-400">Lab
+            08: Icon Studio</span>
+    </nav>
+
+    <!-- Header -->
+    <header class="studio-header">
+        <p class="font-mono text-xs uppercase tracking-[4px] text-violet-400 mb-2">SVG Icon Editor Lab</p>
+        <h1>Icon <span>Studio</span></h1>
+        <p class="text-slate-400 text-sm max-w-lg mx-auto mt-3">SVG Icon editor with stroke/color controls, export as
+            data-uri, React/Vue component strings.</p>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="studio-container">
+        <!-- LEFT: Controls -->
+        <section class="controls-panel">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono mb-4">Icon Controls</h2>
+
+            <!-- Icon Presets -->
+            <div class="control-group">
+                <label class="control-label">Icon Presets</label>
+                <div class="icon-presets">
+                    <button class="icon-preset-btn active" data-icon="heart">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                        </svg>
+                    </button>
+                    <button class="icon-preset-btn" data-icon="star">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon
+                                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                    </button>
+                    <button class="icon-preset-btn" data-icon="bell">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                        </svg>
+                    </button>
+                    <button class="icon-preset-btn" data-icon="settings">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3" />
+                            <path
+                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                        </svg>
+                    </button>
+                    <button class="icon-preset-btn" data-icon="user">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                    </button>
+                    <button class="icon-preset-btn" data-icon="search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.35-4.35" />
+                        </svg>
+                    </button>
+                    <button class="icon-preset-btn" data-icon="menu">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="12" x2="21" y2="12" />
+                            <line x1="3" y1="6" x2="21" y2="6" />
+                            <line x1="3" y1="18" x2="21" y2="18" />
+                        </svg>
+                    </button>
+                    <button class="icon-preset-btn" data-icon="arrow-right">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12 5 19 12 12 19" />
+                        </svg>
+                    </button>
+                    <button class="icon-preset-btn" data-icon="home">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                            <polyline points="9 22 9 12 15 12 15 22" />
+                        </svg>
+                    </button>
+                    <button class="icon-preset-btn" data-icon="mail">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                            <polyline points="22,6 12,13 2,6" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stroke Color -->
+            <div class="control-group">
+                <label class="control-label">Stroke Color</label>
+                <input type="color" id="stroke-color" class="color-input" value="#a78bfa">
+            </div>
+
+            <!-- Fill Color -->
+            <div class="control-group">
+                <label class="control-label">Fill Color</label>
+                <input type="color" id="fill-color" class="color-input" value="none">
+            </div>
+
+            <!-- Stroke Width -->
+            <div class="control-group">
+                <label class="control-label">Stroke Width <span id="stroke-width-label">2</span></label>
+                <input type="range" id="stroke-width-slider" class="control-slider" min="0.5" max="4" value="2"
+                    step="0.25">
+            </div>
+
+            <!-- Size -->
+            <div class="control-group">
+                <label class="control-label">Icon Size <span id="size-label">80px</span></label>
+                <input type="range" id="size-slider" class="control-slider" min="40" max="160" value="80" step="8">
+            </div>
+
+            <!-- Rotation -->
+            <div class="control-group">
+                <label class="control-label">Rotation <span id="rotation-label">0°</span></label>
+                <input type="range" id="rotation-slider" class="control-slider" min="0" max="360" value="0" step="15">
+            </div>
+        </section>
+
+        <!-- RIGHT: Preview + Export -->
+        <section class="preview-area">
+            <div class="icon-stage">
+                <div class="icon-display" id="icon-display">
+                    <svg id="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                    </svg>
+                </div>
+                <p class="text-slate-500 text-xs mt-3 font-mono" id="icon-name">heart</p>
+            </div>
+
+            <!-- Export Tabs -->
+            <div class="export-tabs">
+                <button class="export-tab active" data-export="svg">SVG</button>
+                <button class="export-tab" data-export="data-uri">Data URI</button>
+                <button class="export-tab" data-export="react">React</button>
+                <button class="export-tab" data-export="vue">Vue</button>
+            </div>
+
+            <!-- CODE OUTPUT -->
+            <div class="code-output">
+                <div class="code-header">
+                    <span id="export-label">SVG Code</span>
+                    <button id="copy-css-btn" class="copy-btn" title="Copy Code">📋 Copy</button>
+                </div>
+                <pre class="code-block" id="code-block"><!-- Select an icon above --></pre>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const iconSvg = document.getElementById('icon-svg');
+            const iconDisplay = document.getElementById('icon-display');
+            const iconName = document.getElementById('icon-name');
+            const strokeColor = document.getElementById('stroke-color');
+            const fillColor = document.getElementById('fill-color');
+            const strokeWidthSlider = document.getElementById('stroke-width-slider');
+            const strokeWidthLabel = document.getElementById('stroke-width-label');
+            const sizeSlider = document.getElementById('size-slider');
+            const sizeLabel = document.getElementById('size-label');
+            const rotationSlider = document.getElementById('rotation-slider');
+            const rotationLabel = document.getElementById('rotation-label');
+            const codeBlock = document.getElementById('code-block');
+            const exportLabel = document.getElementById('export-label');
+            const copyBtn = document.getElementById('copy-css-btn');
+            const presetBtns = document.querySelectorAll('.icon-preset-btn');
+            const exportTabs = document.querySelectorAll('.export-tab');
+
+            const ICONS = {
+                heart: '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>',
+                star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+                bell: '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
+                settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+                user: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+                search: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>',
+                menu: '<line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>',
+                'arrow-right': '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+                home: '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+                mail: '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>'
+            };
+
+            let currentIcon = 'heart';
+            let currentExport = 'svg';
+
+            function updateIcon() {
+                const stroke = strokeColor.value;
+                const fill = fillColor.value === 'none' ? 'none' : fillColor.value;
+                const strokeWidth = strokeWidthSlider.value;
+                const size = parseInt(sizeSlider.value);
+                const rotation = parseInt(rotationSlider.value);
+                const paths = ICONS[currentIcon];
+
+                iconSvg.innerHTML = paths;
+                iconSvg.setAttribute('stroke', stroke);
+                iconSvg.setAttribute('fill', fill);
+                iconSvg.setAttribute('stroke-width', strokeWidth);
+                iconSvg.style.width = `${size}px`;
+                iconSvg.style.height = `${size}px`;
+                iconSvg.style.transform = `rotate(${rotation}deg)`;
+
+                strokeWidthLabel.textContent = strokeWidth;
+                sizeLabel.textContent = `${size}px`;
+                rotationLabel.textContent = `${rotation}°`;
+                iconName.textContent = currentIcon;
+
+                updateExport();
+            }
+
+            function getSvgString() {
+                const stroke = strokeColor.value;
+                const fill = fillColor.value === 'none' ? 'none' : fillColor.value;
+                const strokeWidth = strokeWidthSlider.value;
+                const paths = ICONS[currentIcon];
+
+                return `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">\n  ${paths.replace(/>/g, '>\n  ').replace(/><\//g, '>\n  </')}\n</svg>`;
+            }
+
+            function updateExport() {
+                const svgStr = getSvgString();
+
+                if (currentExport === 'svg') {
+                    codeBlock.innerHTML = `<span class="cmt"><!-- Icon Studio: ${currentIcon} --></span>\n\n${escapeHtml(svgStr)}`;
+                    exportLabel.textContent = 'SVG Code';
+                } else if (currentExport === 'data-uri') {
+                    const encoded = btoa(svgStr);
+                    codeBlock.innerHTML =
+                        `<span class="cmt">/* Data URI — paste into CSS background */</span>\n\n<span class="val">data:image/svg+xml;base64,${encoded}</span>`;
+                    exportLabel.textContent = 'Data URI (Base64)';
+                } else if (currentExport === 'react') {
+                    const reactStr = svgStr
+                        .replace(/class=/g, 'className=')
+                        .replace(/stroke-width=/g, 'strokeWidth=')
+                        .replace(/stroke-linecap=/g, 'strokeLinecap=')
+                        .replace(/stroke-linejoin=/g, 'strokeLinejoin=');
+                    codeBlock.innerHTML =
+                        `<span class="cmt">// React Component: ${currentIcon}</span>\n\n<span class="tag">export const</span> <span class="val">${capitalize(currentIcon)}Icon</span> = <span class="tag">()</span> <span class="tag">=></span> (\n  ${escapeHtml(reactStr)}\n);`;
+                    exportLabel.textContent = 'React Component';
+                } else if (currentExport === 'vue') {
+                    codeBlock.innerHTML = `<span class="cmt"><!-- Vue Component: ${currentIcon} --></span>\n\n<span class="tag"><template></span>\n  ${escapeHtml(svgStr.replace('<svg', '<svg v-bind="$attrs"'))}\n<span class="tag"></template></span>`;
+                    exportLabel.textContent = 'Vue Component';
+                }
+            }
+
+            function escapeHtml(str) {
+                return str.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>');
+            }
+
+            function capitalize(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1).replace(/-([a-z])/g, g => g[1].toUpperCase());
+            }
+
+            // Preset buttons
+            presetBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    presetBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentIcon = btn.dataset.icon;
+                    updateIcon();
+                });
+            });
+
+            // Controls
+            strokeColor.addEventListener('input', updateIcon);
+            fillColor.addEventListener('input', updateIcon);
+            strokeWidthSlider.addEventListener('input', updateIcon);
+            sizeSlider.addEventListener('input', updateIcon);
+            rotationSlider.addEventListener('input', updateIcon);
+
+            // Export tabs
+            exportTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    exportTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentExport = tab.dataset.export;
+                    updateExport();
+                });
+            });
+
+            // Copy
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    const raw = codeBlock.textContent || codeBlock.innerText;
+                    navigator.clipboard.writeText(raw).then(() => {
+                        copyBtn.textContent = '✅ Copied!';
+                        setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
+                    });
+                });
+            }
+
+            // Init
+            updateIcon();
+        });
+    </script>
+</body>
+
+</html>

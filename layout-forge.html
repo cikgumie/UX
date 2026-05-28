@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout Forge — CSS Grid & Flexbox Builder</title>
+    <meta name="description"
+        content="Visual CSS Grid & Flexbox builder — Drag to create, arrange, and export responsive layout code.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- TailwindCSS v3 CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #080a14;
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(rgba(139, 92, 246, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 92, 246, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .forge-header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .forge-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a78bfa, #7c3aed, #6d28d9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .forge-header h1 span {
+            background: linear-gradient(135deg, #f59e0b, #e85d04);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .forge-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Controls */
+        .controls-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 16px;
+        }
+
+        .control-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .control-label span {
+            color: #a78bfa;
+        }
+
+        .control-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            border-radius: 4px;
+            background: rgba(139, 92, 246, 0.2);
+            outline: none;
+        }
+
+        .control-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #7c3aed;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+        }
+
+        .control-select {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.3);
+            color: #e2e8f0;
+            font-size: 0.75rem;
+            font-family: 'Fira Code', monospace;
+            outline: none;
+        }
+
+        .control-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #94a3b8;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .control-checkbox input {
+            accent-color: #7c3aed;
+        }
+
+        .action-btn {
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: #fff;
+        }
+
+        .action-btn.primary:hover {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Preview Area */
+        .preview-area {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .layout-stage {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 24px;
+            min-height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .layout-mode-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 3px;
+        }
+
+        .layout-mode-tab {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .layout-mode-tab.active {
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+        }
+
+        .layout-mode-tab:hover:not(.active) {
+            color: #94a3b8;
+        }
+
+        /* Grid playground */
+        .grid-playground {
+            display: grid;
+            gap: 8px;
+            min-height: 200px;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            border: 1px dashed rgba(139, 92, 246, 0.2);
+        }
+
+        .grid-playground.flex-mode {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 8px;
+            min-height: 200px;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            border: 1px dashed rgba(236, 72, 153, 0.2);
+        }
+
+        .grid-item {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.5);
+            min-height: 40px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+        }
+
+        .grid-item:hover {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.5), rgba(139, 92, 246, 0.2));
+            border-color: rgba(139, 92, 246, 0.4);
+        }
+
+        .grid-item .item-label {
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            font-size: 0.5rem;
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        .grid-item.selected {
+            border-color: #f472b6;
+            box-shadow: 0 0 15px rgba(244, 114, 182, 0.3);
+        }
+
+        /* Code output */
+        .code-output {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.65rem;
+            color: #64748b;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 0.75rem;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #a78bfa;
+        }
+
+        .code-block {
+            padding: 14px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.7rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+            white-space: pre-wrap;
+            min-height: 100px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .code-block .cmt {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .code-block .sel {
+            color: #f472b6;
+        }
+
+        .code-block .prop {
+            color: #818cf8;
+        }
+
+        .code-block .val {
+            color: #fbbf24;
+        }
+
+        .code-block .num {
+            color: #34d399;
+        }
+
+        /* Item width/height controls for flex */
+        .item-size-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+        }
+
+        .item-size-controls label {
+            font-size: 0.6rem;
+            color: #64748b;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .item-size-controls input {
+            width: 100%;
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.3);
+            color: #e2e8f0;
+            font-size: 0.7rem;
+            font-family: 'Fira Code', monospace;
+            outline: none;
+        }
+
+        /* Presets */
+        .preset-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .preset-btn {
+            padding: 6px 8px;
+            border-radius: 8px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: transparent;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .preset-btn:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: #a78bfa;
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        .preset-btn.active {
+            background: rgba(139, 92, 246, 0.15);
+            color: #fff;
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .forge-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+
+    <!-- Navigation -->
+    <nav class="max-w-[1200px] w-full mx-auto px-6 pt-6 flex justify-between items-center relative z-10">
+        <a href="index.html"
+            class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to UI Craft Labs
+        </a>
+        <span
+            class="text-xs font-mono px-3 py-1 rounded-full bg-slate-900/60 border border-violet-500/20 text-violet-400">Lab
+            07: Layout Forge</span>
+    </nav>
+
+    <!-- Header -->
+    <header class="forge-header">
+        <p class="font-mono text-xs uppercase tracking-[4px] text-violet-400 mb-2">CSS Grid & Flexbox Lab</p>
+        <h1>Layout <span>Forge</span></h1>
+        <p class="text-slate-400 text-sm max-w-lg mx-auto mt-3">Visual CSS Grid & Flexbox builder — Drag to create,
+            arrange,
+            and export responsive layout code.</p>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="forge-container">
+        <!-- LEFT: Controls -->
+        <section class="controls-panel">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono mb-4">Layout Controls</h2>
+
+            <!-- Presets -->
+            <div class="control-group">
+                <label class="control-label">Layout Presets</label>
+                <div class="preset-grid">
+                    <button class="preset-btn active" data-preset="3-col">3 Columns</button>
+                    <button class="preset-btn" data-preset="4-col">4 Columns</button>
+                    <button class="preset-btn" data-preset="sidebar">Sidebar + Main</button>
+                    <button class="preset-btn" data-preset="masonry">Masonry</button>
+                    <button class="preset-btn" data-preset="holy-grail">Holy Grail</button>
+                    <button class="preset-btn" data-preset="dashboard">Dashboard</button>
+                </div>
+            </div>
+
+            <!-- Columns -->
+            <div class="control-group">
+                <label class="control-label">Columns <span id="cols-label">3</span></label>
+                <input type="range" id="cols-slider" class="control-slider" min="1" max="6" value="3" step="1">
+            </div>
+
+            <!-- Gap -->
+            <div class="control-group">
+                <label class="control-label">Gap <span id="gap-label">8px</span></label>
+                <input type="range" id="gap-slider" class="control-slider" min="0" max="32" value="8" step="2">
+            </div>
+
+            <!-- Items -->
+            <div class="control-group">
+                <label class="control-label">Items <span id="items-label">6</span></label>
+                <input type="range" id="items-slider" class="control-slider" min="1" max="12" value="6" step="1">
+            </div>
+
+            <!-- Flex Options (shown in flex mode) -->
+            <div class="control-group" id="flex-controls" style="display:none;">
+                <label class="control-label">Flex Direction</label>
+                <select id="flex-direction" class="control-select">
+                    <option value="row">row</option>
+                    <option value="column">column</option>
+                    <option value="row-reverse">row-reverse</option>
+                    <option value="column-reverse">column-reverse</option>
+                </select>
+
+                <label class="control-label" style="margin-top:8px;">Justify Content</label>
+                <select id="flex-justify" class="control-select">
+                    <option value="flex-start">flex-start</option>
+                    <option value="center">center</option>
+                    <option value="flex-end">flex-end</option>
+                    <option value="space-between">space-between</option>
+                    <option value="space-around">space-around</option>
+                    <option value="space-evenly">space-evenly</option>
+                </select>
+
+                <label class="control-label" style="margin-top:8px;">Align Items</label>
+                <select id="flex-align" class="control-select">
+                    <option value="stretch">stretch</option>
+                    <option value="flex-start">flex-start</option>
+                    <option value="center">center</option>
+                    <option value="flex-end">flex-end</option>
+                </select>
+            </div>
+
+            <div class="control-group" style="margin-top:16px;">
+                <label class="control-checkbox">
+                    <input type="checkbox" id="show-labels" checked> Show Labels
+                </label>
+                <label class="control-checkbox">
+                    <input type="checkbox" id="show-numbers"> Show Numbers
+                </label>
+            </div>
+
+            <div class="control-group" style="display:flex;gap:8px;margin-top:16px;">
+                <button id="add-item-btn" class="action-btn secondary" style="flex:1;">＋ Add Item</button>
+                <button id="remove-item-btn" class="action-btn secondary" style="flex:1;">− Remove</button>
+            </div>
+        </section>
+
+        <!-- RIGHT: Preview + Code -->
+        <section class="preview-area">
+            <!-- Mode Tabs -->
+            <div class="layout-stage">
+                <div class="layout-mode-tabs">
+                    <button class="layout-mode-tab active" data-mode="grid">⊞ Grid</button>
+                    <button class="layout-mode-tab" data-mode="flex">≡ Flexbox</button>
+                </div>
+
+                <!-- Grid/Flex Playground -->
+                <div class="grid-playground" id="grid-playground"></div>
+            </div>
+
+            <!-- CODE OUTPUT -->
+            <div class="code-output">
+                <div class="code-header">
+                    <span>CSS Layout Code</span>
+                    <button id="copy-css-btn" class="copy-btn" title="Copy CSS">📋 Copy</button>
+                </div>
+                <pre class="code-block" id="code-block">/* Adjust controls to generate layout code */</pre>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const playground = document.getElementById('grid-playground');
+            const colsSlider = document.getElementById('cols-slider');
+            const colsLabel = document.getElementById('cols-label');
+            const gapSlider = document.getElementById('gap-slider');
+            const gapLabel = document.getElementById('gap-label');
+            const itemsSlider = document.getElementById('items-slider');
+            const itemsLabel = document.getElementById('items-label');
+            const codeBlock = document.getElementById('code-block');
+            const copyBtn = document.getElementById('copy-css-btn');
+            const modeTabs = document.querySelectorAll('.layout-mode-tab');
+            const presetBtns = document.querySelectorAll('.preset-btn');
+            const flexDirection = document.getElementById('flex-direction');
+            const flexJustify = document.getElementById('flex-justify');
+            const flexAlign = document.getElementById('flex-align');
+            const flexControls = document.getElementById('flex-controls');
+            const addItemBtn = document.getElementById('add-item-btn');
+            const removeItemBtn = document.getElementById('remove-item-btn');
+            const showLabels = document.getElementById('show-labels');
+            const showNumbers = document.getElementById('show-numbers');
+
+            let currentMode = 'grid';
+            let itemCount = 6;
+            let colors = ['#7c3aed', '#ec4899', '#f59e0b', '#06b6d4', '#10b981', '#f472b6',
+                '#8b5cf6', '#ef4444', '#3b82f6', '#14b8a6', '#e85d04', '#a855f7'
+            ];
+
+            // Presets configuration
+            const PRESETS = {
+                '3-col': { mode: 'grid', cols: 3, gap: 8, items: 6 },
+                '4-col': { mode: 'grid', cols: 4, gap: 8, items: 8 },
+                'sidebar': { mode: 'grid', cols: 4, gap: 12, items: 5 },
+                'masonry': { mode: 'grid', cols: 3, gap: 6, items: 7 },
+                'holy-grail': { mode: 'grid', cols: 3, gap: 8, items: 3 },
+                'dashboard': { mode: 'grid', cols: 4, gap: 6, items: 8 }
+            };
+
+            function updateLayout() {
+                const cols = parseInt(colsSlider.value);
+                const gap = parseInt(gapSlider.value);
+                itemCount = parseInt(itemsSlider.value);
+
+                colsLabel.textContent = cols;
+                gapLabel.textContent = `${gap}px`;
+                itemsLabel.textContent = itemCount;
+
+                // Clear playground
+                playground.innerHTML = '';
+
+                if (currentMode === 'grid') {
+                    playground.className = 'grid-playground';
+                    playground.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+                    playground.style.gap = `${gap}px`;
+                    playground.style.display = 'grid';
+
+                    // Generate items
+                    for (let i = 0; i < itemCount; i++) {
+                        const item = document.createElement('div');
+                        item.className = 'grid-item';
+                        const colorIdx = i % colors.length;
+                        const isSpecial = (i === 0 && cols >= 3 && itemCount >= 3);
+                        if (isSpecial) {
+                            item.style.gridColumn = 'span 2';
+                            item.style.background =
+                                `linear-gradient(135deg, ${colors[colorIdx]}55, ${colors[(colorIdx + 1) % colors.length]}33)`;
+                            item.style.borderColor = `${colors[colorIdx]}44`;
+                        } else {
+                            item.style.background =
+                                `linear-gradient(135deg, ${colors[colorIdx]}44, ${colors[(colorIdx + 1) % colors.length]}22)`;
+                            item.style.borderColor = `${colors[colorIdx]}33`;
+                        }
+                        if (!showNumbers.checked) {
+                            item.innerHTML = showLabels.checked ? `<span class="item-label">#${i + 1}</span>` : '';
+                        } else {
+                            item.textContent = `${i + 1}`;
+                            if (showLabels.checked) {
+                                const label = document.createElement('span');
+                                label.className = 'item-label';
+                                label.textContent = `#${i + 1}`;
+                                item.appendChild(label);
+                            }
+                        }
+                        playground.appendChild(item);
+                    }
+                } else {
+                    // Flex mode
+                    playground.className = 'grid-playground flex-mode';
+                    playground.style.gap = `${gap}px`;
+                    playground.style.flexDirection = flexDirection.value;
+                    playground.style.justifyContent = flexJustify.value;
+                    playground.style.alignItems = flexAlign.value;
+
+                    for (let i = 0; i < itemCount; i++) {
+                        const item = document.createElement('div');
+                        item.className = 'grid-item';
+                        const colorIdx = i % colors.length;
+                        item.style.background =
+                            `linear-gradient(135deg, ${colors[colorIdx]}44, ${colors[(colorIdx + 1) % colors.length]}22)`;
+                        item.style.borderColor = `${colors[colorIdx]}33`;
+                        item.style.minWidth = i === 1 ? '140px' : (i % 2 === 0 ? '80px' : '100px');
+                        item.style.minHeight = i === 2 ? '60px' : '40px';
+                        if (!showNumbers.checked) {
+                            item.innerHTML = showLabels.checked ? `<span class="item-label">#${i + 1}</span>` : '';
+                        } else {
+                            item.textContent = `${i + 1}`;
+                            if (showLabels.checked) {
+                                const label = document.createElement('span');
+                                label.className = 'item-label';
+                                label.textContent = `#${i + 1}`;
+                                item.appendChild(label);
+                            }
+                        }
+                        playground.appendChild(item);
+                    }
+                }
+
+                updateCode();
+            }
+
+            function updateCode() {
+                const cols = parseInt(colsSlider.value);
+                const gap = parseInt(gapSlider.value);
+
+                if (currentMode === 'grid') {
+                    codeBlock.innerHTML = `<span class="cmt">/* Generated by Layout Forge — CSS Grid */</span>
+
+<span class="sel">.container</span> {
+  <span class="prop">display</span>: <span class="val">grid</span>;
+  <span class="prop">grid-template-columns</span>: <span class="val">repeat(${cols}, 1fr)</span>;
+  <span class="prop">gap</span>: <span class="num">${gap}px</span>;
+}
+
+<span class="cmt">/* Items: ${itemCount} grid cells */</span>
+<span class="sel">.item</span> {
+  <span class="prop">padding</span>: <span class="num">16px</span>;
+  <span class="prop">border-radius</span>: <span class="num">8px</span>;
+}`;
+                } else {
+                    codeBlock.innerHTML = `<span class="cmt">/* Generated by Layout Forge — Flexbox */</span>
+
+<span class="sel">.container</span> {
+  <span class="prop">display</span>: <span class="val">flex</span>;
+  <span class="prop">flex-direction</span>: <span class="val">${flexDirection.value}</span>;
+  <span class="prop">justify-content</span>: <span class="val">${flexJustify.value}</span>;
+  <span class="prop">align-items</span>: <span class="val">${flexAlign.value}</span>;
+  <span class="prop">gap</span>: <span class="num">${gap}px</span>;
+}
+
+<span class="cmt">/* Items: ${itemCount} flex children */</span>
+<span class="sel">.item</span> {
+  <span class="prop">padding</span>: <span class="num">16px</span>;
+  <span class="prop">border-radius</span>: <span class="num">8px</span>;
+  <span class="prop">flex</span>: <span class="val">1 1 auto</span>;
+}`;
+                }
+            }
+
+            // Mode switching
+            modeTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    modeTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentMode = tab.dataset.mode;
+
+                    if (currentMode === 'flex') {
+                        flexControls.style.display = 'block';
+                        // Update preset buttons
+                        presetBtns.forEach(b => b.classList.remove('active'));
+                    } else {
+                        flexControls.style.display = 'none';
+                    }
+                    updateLayout();
+                });
+            });
+
+            // Presets
+            presetBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    presetBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const preset = PRESETS[btn.dataset.preset];
+                    if (preset) {
+                        if (currentMode === 'flex') {
+                            // Switch to grid
+                            modeTabs.forEach(t => t.classList.remove('active'));
+                            modeTabs[0].classList.add('active');
+                            currentMode = 'grid';
+                            flexControls.style.display = 'none';
+                        }
+                        colsSlider.value = preset.cols;
+                        gapSlider.value = preset.gap;
+                        itemsSlider.value = preset.items;
+                        updateLayout();
+                        showNotification(`Preset: ${btn.textContent.trim()}`);
+                    }
+                });
+            });
+
+            // Flex controls
+            flexDirection.addEventListener('change', updateLayout);
+            flexJustify.addEventListener('change', updateLayout);
+            flexAlign.addEventListener('change', updateLayout);
+
+            // Sliders
+            colsSlider.addEventListener('input', updateLayout);
+            gapSlider.addEventListener('input', updateLayout);
+            itemsSlider.addEventListener('input', updateLayout);
+
+            // Add/Remove items
+            addItemBtn.addEventListener('click', () => {
+                const max = parseInt(itemsSlider.max);
+                const val = parseInt(itemsSlider.value);
+                if (val < max) {
+                    itemsSlider.value = val + 1;
+                    updateLayout();
+                }
+            });
+
+            removeItemBtn.addEventListener('click', () => {
+                const min = parseInt(itemsSlider.min);
+                const val = parseInt(itemsSlider.value);
+                if (val > min) {
+                    itemsSlider.value = val - 1;
+                    updateLayout();
+                }
+            });
+
+            // Show Numbers/Labels
+            showNumbers.addEventListener('change', updateLayout);
+            showLabels.addEventListener('change', updateLayout);
+
+            // Copy
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    const raw = codeBlock.textContent || codeBlock.innerText;
+                    navigator.clipboard.writeText(raw).then(() => {
+                        copyBtn.textContent = '✅ Copied!';
+                        setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
+                    });
+                });
+            }
+
+            // Notification
+            function showNotification(msg) {
+                const existing = document.querySelector('.layout-toast');
+                if (existing) existing.remove();
+                const toast = document.createElement('div');
+                toast.className =
+                    'layout-toast fixed bottom-6 right-6 bg-slate-900 border border-violet-500/30 text-white font-semibold text-xs px-4 py-3 rounded-xl shadow-2xl z-50 transition-all';
+                toast.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+                toast.textContent = msg;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 2500);
+            }
+
+            // Init
+            updateLayout();
+        });
+    </script>
+</body>
+
+</html>

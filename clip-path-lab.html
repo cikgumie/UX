@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clip Path Lab — Visual CSS Masking Studio</title>
+  <meta name="description" content="Visual clip-path polygon editor with preset shapes, custom draggable points, dynamic background customizers, and real-time CSS export.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- TailwindCSS v3 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="clip-path-lab.css">
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <!-- Breadcrumb Navigation -->
+  <nav class="max-w-[1200px] w-full mx-auto px-6 pt-6 flex justify-between items-center relative z-10">
+    <a href="index.html" class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back to UI Craft Labs
+    </a>
+    <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-900/60 border border-violet-500/20 text-violet-400">Lab 13: Clip Path Lab</span>
+  </nav>
+
+  <!-- Header Section -->
+  <header class="cpl-header">
+    <p class="font-mono text-xs uppercase tracking-[4px] text-violet-400 mb-2">CSS Shapes & Masking</p>
+    <h1 class="cpl-title">Clip Path <span>Lab</span></h1>
+    <p class="text-slate-400 text-sm max-w-lg mx-auto mt-3">Design custom CSS clip-paths by dragging interactive coordinate handles. Adjust presets, customize backgrounds, and export production-ready CSS.</p>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="cpl-container">
+
+    <!-- LEFT: Controls -->
+    <section class="cpl-controls">
+      <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono mb-4">Shape Controls</h2>
+
+      <!-- Presets -->
+      <div class="control-group">
+        <label class="control-label">Preset Shapes</label>
+        <div class="preset-grid" id="preset-grid">
+          <button class="preset-btn active" data-preset="triangle">Triangle</button>
+          <button class="preset-btn" data-preset="star">Star</button>
+          <button class="preset-btn" data-preset="message">Message Box</button>
+          <button class="preset-btn" data-preset="chevron">Chevron</button>
+          <button class="preset-btn" data-preset="pentagon">Pentagon</button>
+          <button class="preset-btn" data-preset="diamond">Diamond</button>
+          <button class="preset-btn" data-preset="cross">Cross</button>
+          <button class="preset-btn" data-preset="frame">Frame</button>
+        </div>
+      </div>
+
+      <!-- Handle management -->
+      <div class="control-group mt-6">
+        <h3 class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-500 font-mono mb-3">Anchor Management</h3>
+        <div class="flex gap-2">
+          <button id="add-anchor-btn" class="action-btn secondary flex-1">＋ Add Point</button>
+          <button id="remove-anchor-btn" class="action-btn secondary flex-1">－ Remove Point</button>
+        </div>
+      </div>
+
+      <!-- Live Mask Background Customizer -->
+      <div class="control-group mt-6">
+        <label class="control-label">Mask Background</label>
+        <select id="bg-selector" class="control-select">
+          <option value="solid-purple" selected>Solid Purple Gradient</option>
+          <option value="neon-mesh">Futuristic Neon Mesh</option>
+          <option value="comfort-warm">Off-Warm Comfort</option>
+          <option value="animated-waves">Animated Cyberpunk Wave</option>
+          <option value="stock-image">Scenic Nature Image</option>
+        </select>
+      </div>
+
+      <div class="control-group mt-4 flex items-center justify-between">
+        <label class="control-checkbox">
+          <input type="checkbox" id="toggle-grid" checked> Show Grid Overlay
+        </label>
+        <label class="control-checkbox">
+          <input type="checkbox" id="toggle-coordinates" checked> Show Node Labels
+        </label>
+      </div>
+    </section>
+
+    <!-- CENTER: Preview Stage -->
+    <section class="cpl-preview">
+      <div class="cpl-stage-wrapper">
+        <div class="cpl-stage" id="cpl-stage">
+          <!-- Dot grid background -->
+          <div class="stage-grid" id="stage-grid"></div>
+
+          <!-- Masked object -->
+          <div class="cpl-object" id="cpl-object"></div>
+
+          <!-- Drag handles (injected dynamically via JS) -->
+          <div class="handles-container" id="handles-container"></div>
+        </div>
+      </div>
+      
+      <!-- Coordinate List Inspector -->
+      <div class="coordinates-inspector">
+        <span class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-500 font-mono">Anchor Coordinates</span>
+        <div class="coordinates-list" id="coordinates-list">
+          <!-- Coordinates list injected here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: Code Inspector -->
+    <section class="cpl-code">
+      <div class="code-header">
+        <span>CSS clip-path</span>
+        <button id="copy-css-btn" class="copy-btn">📋 Copy Code</button>
+      </div>
+      <pre class="code-block" id="code-block">/* Drag handles to generate CSS */</pre>
+
+      <div class="code-header mt-4" style="border-top:1px solid var(--border-glass);padding-top:16px">
+        <span>SVG &lt;clipPath&gt; Export</span>
+        <button id="copy-svg-btn" class="copy-btn">📋 Copy SVG</button>
+      </div>
+      <pre class="code-block" id="svg-code-block">/* SVG markup output */</pre>
+    </section>
+
+  </main>
+
+  <script src="clip-path-lab.js"></script>
+</body>
+</html>
