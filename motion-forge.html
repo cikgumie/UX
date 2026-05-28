@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Motion Forge — Animation Playground</title>
+  <meta name="description" content="Interactive animation playground to build and test CSS keyframe animations with easing functions, delay/duration sliders, and live code preview.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- TailwindCSS v3 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="motion-forge.css">
+</head>
+<body>
+
+  <!-- Background Grid -->
+  <div class="bg-grid"></div>
+
+  <!-- Navigation -->
+  <nav class="max-w-[1200px] w-full mx-auto px-6 pt-6 flex justify-between items-center relative z-10">
+    <a href="index.html" class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back to UI Craft Labs
+    </a>
+    <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-900/60 border border-violet-500/20 text-violet-400">Lab 03: Motion Forge</span>
+  </nav>
+
+  <!-- Header -->
+  <header class="forge-header">
+    <p class="font-mono text-xs uppercase tracking-[4px] text-violet-400 mb-2">CSS Animation Lab</p>
+    <h1 class="forge-title">Motion <span>Forge</span></h1>
+    <p class="text-slate-400 text-sm max-w-lg mx-auto mt-3">Build and preview CSS keyframe animations with interactive controls. Tweak easing, duration, delay — see the magic in real-time.</p>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="forge-container">
+
+    <!-- LEFT: Controls Panel -->
+    <section class="controls-panel">
+      <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono mb-4">Animation Controls</h2>
+
+      <!-- Animation Type -->
+      <div class="control-group">
+        <label class="control-label">Animation</label>
+        <select id="anim-select" class="control-select">
+          <option value="bounce">Bounce</option>
+          <option value="fade-in" selected>Fade In</option>
+          <option value="slide-up">Slide Up</option>
+          <option value="slide-in-left">Slide In Left</option>
+          <option value="rotate-in">Rotate In</option>
+          <option value="scale-up">Scale Up</option>
+          <option value="flip">Flip</option>
+          <option value="shake">Shake</option>
+          <option value="pulse-glow">Pulse Glow</option>
+          <option value="wiggle">Wiggle</option>
+        </select>
+      </div>
+
+      <!-- Easing -->
+      <div class="control-group">
+        <label class="control-label">Easing</label>
+        <select id="easing-select" class="control-select">
+          <option value="ease">ease</option>
+          <option value="linear">linear</option>
+          <option value="ease-in">ease-in</option>
+          <option value="ease-out">ease-out</option>
+          <option value="ease-in-out" selected>ease-in-out</option>
+          <option value="cubic-bezier(0.68, -0.55, 0.265, 1.55)">bounce (spring)</option>
+          <option value="cubic-bezier(0.175, 0.885, 0.32, 1.275)">overshoot</option>
+          <option value="cubic-bezier(0.6, -0.28, 0.735, 0.045)">snap back</option>
+          <option value="cubic-bezier(0.25, 0.46, 0.45, 0.94)">smooth</option>
+        </select>
+      </div>
+
+      <!-- Duration Slider -->
+      <div class="control-group">
+        <label class="control-label">Duration <span id="duration-val">800ms</span></label>
+        <input type="range" id="duration-slider" class="control-slider" min="100" max="3000" value="800" step="50">
+        <div class="slider-ticks">
+          <span>0.1s</span><span>1.5s</span><span>3s</span>
+        </div>
+      </div>
+
+      <!-- Delay Slider -->
+      <div class="control-group">
+        <label class="control-label">Delay <span id="delay-val">0ms</span></label>
+        <input type="range" id="delay-slider" class="control-slider" min="0" max="2000" value="0" step="50">
+        <div class="slider-ticks">
+          <span>0s</span><span>1s</span><span>2s</span>
+        </div>
+      </div>
+
+      <!-- Iterations -->
+      <div class="control-group">
+        <label class="control-label">Iterations</label>
+        <div class="iteration-selector">
+          <button class="iter-btn" data-iter="1">1</button>
+          <button class="iter-btn" data-iter="2">2</button>
+          <button class="iter-btn" data-iter="3">3</button>
+          <button class="iter-btn active" data-iter="infinite">∞</button>
+        </div>
+      </div>
+
+      <!-- Direction -->
+      <div class="control-group">
+        <label class="control-label">Direction</label>
+        <select id="direction-select" class="control-select">
+          <option value="normal">normal</option>
+          <option value="reverse">reverse</option>
+          <option value="alternate">alternate</option>
+          <option value="alternate-reverse">alternate-reverse</option>
+        </select>
+      </div>
+
+      <!-- Play/Pause Controls -->
+      <div class="control-group" style="margin-top:20px;display:flex;gap:8px">
+        <button id="play-btn" class="action-btn primary">▶ Play</button>
+        <button id="pause-btn" class="action-btn secondary">⏸ Pause</button>
+        <button id="reset-btn" class="action-btn secondary">↺ Reset</button>
+      </div>
+
+    </section>
+
+    <!-- CENTER: Preview Area -->
+    <section class="preview-area">
+      <div class="preview-stage" id="preview-stage">
+        <div class="anim-object" id="anim-object">
+          <div class="anim-shape"></div>
+          <span class="anim-label">Forge</span>
+        </div>
+      </div>
+
+      <!-- Easing Visualizer -->
+      <div class="easing-visualizer">
+        <h3 class="text-xs font-bold uppercase text-slate-500 font-mono mb-2">Easing Curve</h3>
+        <canvas id="easing-canvas" width="300" height="150"></canvas>
+      </div>
+    </section>
+
+    <!-- RIGHT: CSS Code -->
+    <section class="code-output">
+      <div class="code-header">
+        <span>CSS Keyframes</span>
+        <button id="copy-css-btn" class="copy-btn" title="Copy CSS">📋 Copy</button>
+      </div>
+      <pre class="code-block" id="code-block">/* Select an animation to begin */</pre>
+    </section>
+
+  </main>
+
+  <script src="motion-forge.js"></script>
+</body>
+</html>

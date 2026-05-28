@@ -218,6 +218,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // ===== Copy CSS button =====
+  const copyBtn = document.getElementById('copy-css-btn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      // Get plain text version of the code
+      const rawCode = cssCode.textContent || cssCode.innerText;
+      navigator.clipboard.writeText(rawCode).then(() => {
+        copyBtn.textContent = '✅ Copied!';
+        setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
+      }).catch(() => {
+        copyBtn.textContent = '❌ Error';
+        setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
+      });
+    });
+  }
+
   // ===== Initialize =====
   container.style.width = PRESETS.desktop + 'px';
   updateLayout();

@@ -144,7 +144,10 @@
             <div class="inspector-dot"></div>
             <span>CSS Inspector</span>
           </div>
-          <div class="inspector-style-name" id="style-name">Glassmorphism</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="inspector-style-name" id="style-name">Glassmorphism</div>
+            <button class="copy-css-btn" id="copy-css-btn" title="Copy CSS to clipboard" style="padding:4px 10px;border:none;border-radius:20px;font-family:'Inter',sans-serif;font-size:0.68rem;font-weight:600;cursor:pointer;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);transition:all 0.2s ease">📋 Copy</button>
+          </div>
         </div>
         <pre class="inspector-pre"><code id="css-code-block"></code></pre>
       </section>

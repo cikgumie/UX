@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShadowCraft — Box Shadow & Filter Studio</title>
+  <meta name="description" content="Multi-layer box shadows, backdrop-filter effects, and real-time preview studio with copy-to-clipboard.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="shadowcraft.css">
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <nav class="max-w-[1200px] w-full mx-auto px-6 pt-6 flex justify-between items-center relative z-10">
+    <a href="index.html" class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+      Back to UI Craft Labs
+    </a>
+    <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-900/60 border border-violet-500/20 text-violet-400">Lab 05: ShadowCraft</span>
+  </nav>
+
+  <header class="sc-header">
+    <p class="font-mono text-xs uppercase tracking-[4px] text-violet-400 mb-2">Shadow Studio</p>
+    <h1 class="sc-title">Shadow<span>Craft</span></h1>
+    <p class="text-slate-400 text-sm max-w-lg mx-auto mt-3">Design multi-layer box shadows with blur, spread, color controls, backdrop-filter effects, and live preview.</p>
+  </header>
+
+  <main class="sc-container">
+
+    <!-- LEFT: Controls -->
+    <section class="sc-controls">
+      <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono mb-4">Shadow Controls</h2>
+
+      <!-- Presets -->
+      <div class="control-group">
+        <label class="control-label">Preset</label>
+        <div class="preset-grid" id="preset-grid">
+          <button class="preset-btn active" data-preset="soft">Soft</button>
+          <button class="preset-btn" data-preset="medium">Medium</button>
+          <button class="preset-btn" data-preset="hard">Hard</button>
+          <button class="preset-btn" data-preset="glow">Glow</button>
+          <button class="preset-btn" data-preset="inset">Inset</button>
+          <button class="preset-btn" data-preset="neon">Neon</button>
+        </div>
+      </div>
+
+      <!-- Layer 1 -->
+      <div class="shadow-layer">
+        <h3 class="layer-title">Layer 1</h3>
+        <div class="control-group">
+          <label class="control-label">OffsetX <span id="ox1-val">4</span></label>
+          <input type="range" id="ox1" class="control-slider" min="-30" max="30" value="4">
+        </div>
+        <div class="control-group">
+          <label class="control-label">OffsetY <span id="oy1-val">4</span></label>
+          <input type="range" id="oy1" class="control-slider" min="-30" max="30" value="4">
+        </div>
+        <div class="control-group">
+          <label class="control-label">Blur <span id="blur1-val">15</span></label>
+          <input type="range" id="blur1" class="control-slider" min="0" max="80" value="15">
+        </div>
+        <div class="control-group">
+          <label class="control-label">Spread <span id="spread1-val">0</span></label>
+          <input type="range" id="spread1" class="control-slider" min="-20" max="30" value="0">
+        </div>
+        <div class="control-group" style="display:flex;gap:8px;align-items:center">
+          <label class="control-label" style="margin:0">Color</label>
+          <input type="color" id="color1" value="#8b5cf6" class="color-input">
+          <input type="text" id="color1-hex" value="#8b5cf6" class="hex-input" style="flex:1;padding:6px 10px;font-size:0.72rem">
+        </div>
+        <div class="control-group">
+          <label class="control-label">Opacity <span id="opacity1-val">0.5</span></label>
+          <input type="range" id="opacity1" class="control-slider" min="0" max="100" value="50">
+        </div>
+        <label class="inset-label">
+          <input type="checkbox" id="inset1"> Inset
+        </label>
+      </div>
+
+      <!-- Layer 2 -->
+      <div class="shadow-layer">
+        <h3 class="layer-title">Layer 2</h3>
+        <div class="control-group">
+          <label class="control-label">OffsetX <span id="ox2-val">-2</span></label>
+          <input type="range" id="ox2" class="control-slider" min="-30" max="30" value="-2">
+        </div>
+        <div class="control-group">
+          <label class="control-label">OffsetY <span id="oy2-val">-2</span></label>
+          <input type="range" id="oy2" class="control-slider" min="-30" max="30" value="-2">
+        </div>
+        <div class="control-group">
+          <label class="control-label">Blur <span id="blur2-val">10</span></label>
+          <input type="range" id="blur2" class="control-slider" min="0" max="80" value="10">
+        </div>
+        <div class="control-group">
+          <label class="control-label">Spread <span id="spread2-val">0</span></label>
+          <input type="range" id="spread2" class="control-slider" min="-20" max="30" value="0">
+        </div>
+        <div class="control-group" style="display:flex;gap:8px;align-items:center">
+          <label class="control-label" style="margin:0">Color</label>
+          <input type="color" id="color2" value="#ec4899" class="color-input">
+          <input type="text" id="color2-hex" value="#ec4899" class="hex-input" style="flex:1;padding:6px 10px;font-size:0.72rem">
+        </div>
+        <div class="control-group">
+          <label class="control-label">Opacity <span id="opacity2-val">0.3</span></label>
+          <input type="range" id="opacity2" class="control-slider" min="0" max="100" value="30">
+        </div>
+        <label class="inset-label">
+          <input type="checkbox" id="inset2"> Inset
+        </label>
+      </div>
+
+      <!-- Layer 3 (toggle) -->
+      <details class="shadow-layer-extra">
+        <summary class="layer-title" style="cursor:pointer;opacity:0.6">Layer 3 (Optional)</summary>
+        <div class="control-group">
+          <label class="control-label">OffsetX <span id="ox3-val">0</span></label>
+          <input type="range" id="ox3" class="control-slider" min="-30" max="30" value="0">
+        </div>
+        <div class="control-group">
+          <label class="control-label">OffsetY <span id="oy3-val">0</span></label>
+          <input type="range" id="oy3" class="control-slider" min="-30" max="30" value="0">
+        </div>
+        <div class="control-group">
+          <label class="control-label">Blur <span id="blur3-val">40</span></label>
+          <input type="range" id="blur3" class="control-slider" min="0" max="100" value="40">
+        </div>
+        <div class="control-group" style="display:flex;gap:8px;align-items:center">
+          <label class="control-label" style="margin:0">Color</label>
+          <input type="color" id="color3" value="#06b6d4" class="color-input">
+          <input type="text" id="color3-hex" value="#06b6d4" class="hex-input" style="flex:1;padding:6px 10px;font-size:0.72rem">
+        </div>
+        <div class="control-group">
+          <label class="control-label">Opacity <span id="opacity3-val">0.2</span></label>
+          <input type="range" id="opacity3" class="control-slider" min="0" max="100" value="20">
+        </div>
+      </details>
+    </section>
+
+    <!-- CENTER: Preview -->
+    <section class="sc-preview">
+      <div class="sc-stage" id="sc-stage">
+        <div class="sc-object" id="sc-object">
+          <div class="sc-shape" id="sc-shape"></div>
+          <span class="sc-label">Shadow</span>
+        </div>
+        <div class="backdrop-demo" id="backdrop-demo">
+          <span class="text-[0.65rem] font-mono uppercase tracking-wider text-white/40">backdrop-filter demo</span>
+          <div class="backdrop-box" id="backdrop-box">blur(12px)</div>
+        </div>
+      </div>
+      
+      <!-- Backdrop Controls -->
+      <div class="backdrop-controls">
+        <div class="control-group" style="margin:0">
+          <label class="control-label">Backdrop Blur <span id="bd-blur-val">12px</span></label>
+          <input type="range" id="bd-blur" class="control-slider" min="0" max="40" value="12" step="1">
+        </div>
+        <div class="control-group" style="margin:0">
+          <label class="control-label">Brightness <span id="bd-bright-val">100%</span></label>
+          <input type="range" id="bd-bright" class="control-slider" min="50" max="200" value="100" step="5">
+        </div>
+        <div class="control-group" style="margin:0">
+          <label class="control-label">Contrast <span id="bd-contrast-val">100%</span></label>
+          <input type="range" id="bd-contrast" class="control-slider" min="50" max="200" value="100" step="5">
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: Code -->
+    <section class="sc-code">
+      <div class="code-header">
+        <span>box-shadow CSS</span>
+        <button id="copy-shadow-btn" class="copy-btn">📋 Copy</button>
+      </div>
+      <pre class="code-block" id="code-block">/* Adjust controls to generate */</pre>
+
+      <div class="code-header" style="border-top:1px solid var(--border-glass);margin-top:16px">
+        <span>backdrop-filter CSS</span>
+        <button id="copy-backdrop-btn" class="copy-btn">📋 Copy</button>
+      </div>
+      <pre class="code-block" id="backdrop-code-block">/* backdrop-filter controls */</pre>
+    </section>
+
+  </main>
+
+  <script src="shadowcraft.js"></script>
+</body>
+</html>

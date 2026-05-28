@@ -229,11 +229,14 @@
     <div class="css-panel-inner">
       <div class="css-panel-header">
         <span class="css-panel-label">CSS</span>
-        <div class="css-tabs">
-          <button class="css-tab" data-bp="mobile" id="css-tab-base">Base</button>
-          <button class="css-tab" data-bp="tablet" id="css-tab-480">≥ 480</button>
-          <button class="css-tab" data-bp="laptop" id="css-tab-768">≥ 768</button>
-          <button class="css-tab active" data-bp="desktop" id="css-tab-1024">≥ 1024</button>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="css-tabs">
+            <button class="css-tab" data-bp="mobile" id="css-tab-base">Base</button>
+            <button class="css-tab" data-bp="tablet" id="css-tab-480">≥ 480</button>
+            <button class="css-tab" data-bp="laptop" id="css-tab-768">≥ 768</button>
+            <button class="css-tab active" data-bp="desktop" id="css-tab-1024">≥ 1024</button>
+          </div>
+          <button class="copy-css-btn" id="copy-css-btn" title="Copy CSS to clipboard" style="padding:5px 12px;border:none;border-radius:20px;font-family:'Inter',sans-serif;font-size:0.72rem;font-weight:600;cursor:pointer;background:rgba(255,255,255,0.08);color:var(--text-secondary);transition:all 0.2s ease">📋 Copy</button>
         </div>
       </div>
       <pre class="css-code" id="css-code"></pre>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chroma Lab — Color Palette Studio</title>
+  <meta name="description" content="Interactive color palette generator with harmony rules, contrast checking, and CSS variable export.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="chroma-lab.css">
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <nav class="max-w-[1200px] w-full mx-auto px-6 pt-6 flex justify-between items-center relative z-10">
+    <a href="index.html" class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+      Back to UI Craft Labs
+    </a>
+    <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-900/60 border border-violet-500/20 text-violet-400">Lab 04: Chroma Lab</span>
+  </nav>
+
+  <header class="chroma-header">
+    <p class="font-mono text-xs uppercase tracking-[4px] text-violet-400 mb-2">Color Studio</p>
+    <h1 class="chroma-title">Chroma <span>Lab</span></h1>
+    <p class="text-slate-400 text-sm max-w-lg mx-auto mt-3">Generate harmonious color palettes, check contrast ratios, and export CSS custom properties.</p>
+  </header>
+
+  <main class="chroma-container">
+
+    <!-- LEFT: Color Controls -->
+    <section class="color-controls">
+      <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono mb-4">Color Controls</h2>
+
+      <div class="control-group">
+        <label class="control-label">Base Color</label>
+        <div class="color-picker-row">
+          <input type="color" id="base-color" value="#8b5cf6" class="color-input">
+          <input type="text" id="base-hex" value="#8b5cf6" class="hex-input">
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Harmony Rule</label>
+        <select id="harmony-select" class="control-select">
+          <option value="monochromatic">Monochromatic</option>
+          <option value="complementary">Complementary</option>
+          <option value="triadic" selected>Triadic</option>
+          <option value="tetradic">Tetradic (Rectangle)</option>
+          <option value="analogous">Analogous</option>
+          <option value="split-complementary">Split Complementary</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Palette Size</label>
+        <select id="size-select" class="control-select">
+          <option value="5">5 colors</option>
+          <option value="6">6 colors</option>
+          <option value="7">7 colors</option>
+          <option value="8" selected>8 colors</option>
+          <option value="10">10 colors</option>
+        </select>
+      </div>
+
+      <div class="contrast-checker">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono mb-3">Contrast Checker</h3>
+        <div class="contrast-row">
+          <input type="color" id="fg-color" value="#ffffff" class="color-input small">
+          <span class="contrast-label">FG</span>
+          <input type="color" id="bg-color" value="#8b5cf6" class="color-input small">
+          <span class="contrast-label">BG</span>
+        </div>
+        <div class="contrast-result" id="contrast-result">
+          <span class="contrast-ratio" id="contrast-ratio">—</span>
+          <span class="contrast-badge" id="contrast-badge">—</span>
+        </div>
+      </div>
+
+      <button id="export-btn" class="export-btn">📋 Export CSS Variables</button>
+    </section>
+
+    <!-- RIGHT: Palette Display -->
+    <section class="palette-display">
+      <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono mb-4">Generated Palette</h2>
+      <div class="palette-grid" id="palette-grid"></div>
+
+      <div class="css-export">
+        <div class="css-export-header">
+          <span>CSS Custom Properties</span>
+          <button id="copy-palette-btn" class="copy-btn">📋 Copy</button>
+        </div>
+        <pre class="css-export-code" id="css-export-code">:root {
+  /* Select a base color to begin */
+}</pre>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="chroma-lab.js"></script>
+</body>
+</html>

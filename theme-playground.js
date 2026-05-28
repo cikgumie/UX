@@ -275,6 +275,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // ===== Copy CSS button =====
+  const copyBtn = document.getElementById('copy-css-btn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const rawCode = cssCodeBlock.textContent || cssCodeBlock.innerText;
+      navigator.clipboard.writeText(rawCode).then(() => {
+        copyBtn.textContent = '✅ Copied!';
+        setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
+      }).catch(() => {
+        copyBtn.textContent = '❌ Error';
+        setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
+      });
+    });
+  }
+
   // Initialize display
   styleTabs[0].click();
 
