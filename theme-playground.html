@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UI Design Languages Playground</title>
-  <meta name="description" content="Explore and inspect 8 different design languages: Glassmorphism, Skeuomorphism, Claymorphism, Neumorphism, Flat Design, Material, Neo-Brutalism, and Aurora UI in an interactive UI sandbox.">
+  <meta name="description"
+    content="Explore and inspect 8 different design languages: Glassmorphism, Skeuomorphism, Claymorphism, Neumorphism, Flat Design, Material, Neo-Brutalism, and Aurora UI in an interactive UI sandbox.">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  
+
   <!-- TailwindCSS v3 CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom CSS Stylesheet -->
   <link rel="stylesheet" href="theme-playground.css">
 </head>
+
 <body>
 
   <!-- Glowing Mesh Background Blobs (Active on Glass/Aurora styles) -->
@@ -25,8 +28,10 @@
 
   <!-- ===== BREADCRUMB / HUB NAVIGATION ===== -->
   <nav class="max-w-[1200px] w-full mx-auto px-6 pt-6 flex justify-between items-center relative z-10">
-    <a href="index.html" class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <a href="index.html"
+      class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+        stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
       </svg>
       Back to UI Craft Labs
@@ -41,7 +46,8 @@
     <p class="text-xs uppercase font-extrabold tracking-[4px] mb-2 text-violet-400 font-mono">CSS Sandbox Sandbox</p>
     <h1 class="playground-title">UI Design Playground</h1>
     <p class="text-sm text-slate-400 max-w-lg mx-auto mt-3 font-medium">
-      Click design paradigms in the sidebar to transform the climate controller widget and inspect the CSS variables defining each style.
+      Click design paradigms in the sidebar to transform the climate controller widget and inspect the CSS variables
+      defining each style.
     </p>
   </header>
 
@@ -51,46 +57,67 @@
     <!-- LEFT SIDEBAR: 8 DESIGN PARADIGMS -->
     <nav class="sidebar-tabs" aria-label="Design Style Selector">
       <h2 class="text-xs font-extrabold tracking-widest text-slate-500 uppercase px-3 mb-2 font-mono">Design Styles</h2>
-      
+
       <button class="style-tab-btn active" data-style="glassmorphism">
         Glassmorphism <span class="badge-pill bg-sky-500/10 text-sky-400">Glass</span>
       </button>
-      
+
       <button class="style-tab-btn" data-style="skeuomorphism">
         Skeuomorphism <span class="badge-pill bg-amber-500/10 text-amber-400">3D Real</span>
       </button>
-      
+
       <button class="style-tab-btn" data-style="claymorphism">
         Claymorphism <span class="badge-pill bg-emerald-500/10 text-emerald-400">Soft</span>
       </button>
-      
+
       <button class="style-tab-btn" data-style="neumorphism">
         Neumorphism <span class="badge-pill bg-indigo-500/10 text-indigo-400">Soft 3D</span>
       </button>
-      
+
       <button class="style-tab-btn" data-style="flat">
         Flat Design <span class="badge-pill bg-rose-500/10 text-rose-400">2D Flat</span>
       </button>
-      
+
       <button class="style-tab-btn" data-style="material">
         Material Design <span class="badge-pill bg-cyan-500/10 text-cyan-400">Layers</span>
       </button>
-      
+
       <button class="style-tab-btn" data-style="neo-brutalism">
         Neo-Brutalism <span class="badge-pill bg-purple-500/10 text-purple-400">Loud</span>
       </button>
-      
+
       <button class="style-tab-btn" data-style="aurora-ui">
         Aurora UI <span class="badge-pill bg-pink-500/10 text-pink-400">Mesh</span>
       </button>
-      
+
       <button class="style-tab-btn" data-style="cyberpunk">
         Cyberpunk HUD <span class="badge-pill bg-rose-500/10 text-rose-400">Neon</span>
       </button>
-      
+
       <button class="style-tab-btn" data-style="bauhaus">
         Bauhaus Minimal <span class="badge-pill bg-yellow-500/10 text-yellow-400">Stark</span>
       </button>
+
+      <!-- EMOTION MODE SECTION (Trend #8) -->
+      <div style="margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06)">
+        <h2 class="text-xs font-extrabold tracking-widest text-slate-500 uppercase px-3 mb-3 font-mono">🧠 Emotion Mode
+        </h2>
+
+        <button class="emotion-btn active" data-emotion="calm"
+          style="display:block;width:100%;padding:8px 12px;margin-bottom:4px;border-radius:10px;border:1px solid transparent;font-size:0.72rem;font-weight:700;text-align:left;background:rgba(139,92,246,0.1);color:#fff;cursor:pointer;transition:all 0.3s ease;">
+          🕊️ Calm — Soft, Reduced Contrast
+        </button>
+
+        <button class="emotion-btn" data-emotion="energetic"
+          style="display:block;width:100%;padding:8px 12px;margin-bottom:4px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);font-size:0.72rem;font-weight:700;text-align:left;background:transparent;color:var(--text-muted);cursor:pointer;transition:all 0.3s ease;">
+          ⚡ Energetic — Bold, Vibrant Colors
+        </button>
+
+        <button class="emotion-btn" data-emotion="focus"
+          style="display:block;width:100%;padding:8px 12px;margin-bottom:4px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);font-size:0.72rem;font-weight:700;text-align:left;background:transparent;color:var(--text-muted);cursor:pointer;transition:all 0.3s ease;">
+          🎯 Focus — Monochromatic, High Clarity
+        </button>
+      </div>
     </nav>
 
     <!-- RIGHT MAIN WORKSPACE -->
@@ -98,10 +125,10 @@
 
       <!-- THE THEME WIDGET DISPLAY BOX -->
       <section class="mockup-display" id="mockup-display" aria-label="Widget Preview Sandbox">
-        
+
         <!-- Smart thermostat dashboard mockup card -->
         <div class="mockup-card" id="mockup-card">
-          
+
           <h3 class="mockup-card-title">Climate Controller</h3>
 
           <!-- Circular Temp Dial -->
@@ -146,7 +173,9 @@
           </div>
           <div style="display:flex;align-items:center;gap:8px">
             <div class="inspector-style-name" id="style-name">Glassmorphism</div>
-            <button class="copy-css-btn" id="copy-css-btn" title="Copy CSS to clipboard" style="padding:4px 10px;border:none;border-radius:20px;font-family:'Inter',sans-serif;font-size:0.68rem;font-weight:600;cursor:pointer;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);transition:all 0.2s ease">📋 Copy</button>
+            <button class="copy-css-btn" id="copy-css-btn" title="Copy CSS to clipboard"
+              style="padding:4px 10px;border:none;border-radius:20px;font-family:'Inter',sans-serif;font-size:0.68rem;font-weight:600;cursor:pointer;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);transition:all 0.2s ease">📋
+              Copy</button>
           </div>
         </div>
         <pre class="inspector-pre"><code id="css-code-block"></code></pre>
@@ -160,4 +189,5 @@
   <script src="theme-playground.js"></script>
 
 </body>
+
 </html>

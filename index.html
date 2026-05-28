@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,15 +12,13 @@
 
   <!-- Custom Stylesheets -->
   <link rel="stylesheet" href="style.css">
-  
+
   <style>
     /* Card mouse move highlight glow */
     .lab-card::after {
-      background: radial-gradient(
-        600px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
-        rgba(255, 255, 255, 0.035),
-        transparent 40%
-      );
+      background: radial-gradient(600px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
+          rgba(255, 255, 255, 0.035),
+          transparent 40%);
       content: '';
       position: absolute;
       inset: 0;
@@ -36,6 +35,7 @@
       position: relative;
       z-index: 10;
     }
+
     .lab-search input {
       width: 100%;
       padding: 14px 20px;
@@ -48,9 +48,11 @@
       transition: border-color 0.3s ease;
       backdrop-filter: blur(12px);
     }
+
     .lab-search input:focus {
       border-color: rgba(hsl(var(--accent-purple)), 0.4);
     }
+
     .lab-search input::placeholder {
       color: var(--text-muted);
     }
@@ -62,6 +64,7 @@
       gap: 8px;
       margin-top: 12px;
     }
+
     .cat-pill {
       padding: 6px 14px;
       border-radius: 50px;
@@ -75,6 +78,7 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
+
     .cat-pill:hover,
     .cat-pill.active {
       background: rgba(hsl(var(--accent-purple)), 0.15);
@@ -97,6 +101,7 @@
       align-items: center;
       gap: 12px;
     }
+
     .section-label::after {
       content: '';
       flex: 1;
@@ -118,6 +123,7 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
+
     .theme-toggle-btn:hover {
       border-color: rgba(hsl(var(--accent-purple)), 0.3);
       color: #fff;
@@ -133,7 +139,11 @@
     }
   </style>
 </head>
+
 <body>
+
+  <!-- Skip to content link (Accessibility - Trend #10) -->
+  <a href="#main-content" class="skip-to-content">Skip to main content</a>
 
   <!-- Background Decorative Glowing Meshes -->
   <div class="radial-glow"></div>
@@ -144,22 +154,36 @@
     <div class="flex items-center justify-center gap-4 mb-4">
       <p class="text-xs uppercase font-extrabold tracking-[6px] text-violet-400 font-mono">Interactive Laboratory</p>
       <button class="theme-toggle-btn" id="theme-toggle-btn" title="Toggle Light/Dark Mode" aria-label="Toggle theme">
-        <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
-        <svg id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        <svg id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
         </svg>
       </button>
     </div>
     <h1 class="glow-title" data-text="UI Craft Labs">UI Craft Labs</h1>
+    
+    <!-- CikguMie Glowing Portrait Avatar -->
+    <div class="flex flex-col items-center mt-6 mb-2">
+      <div class="relative group">
+        <div class="absolute -inset-1 bg-gradient-to-r from-violet-600 to-pink-600 rounded-full blur opacity-60 group-hover:opacity-100 transition duration-500"></div>
+        <img class="relative w-20 h-20 rounded-full object-cover border-2 border-violet-400 shadow-2xl transition-transform duration-500 group-hover:scale-105" src="cikgumie.jpg" alt="CikguMie Portrait">
+      </div>
+    </div>
+
     <div class="flex items-center justify-center gap-2 mt-3">
       <span class="h-[1px] w-8 bg-gradient-to-r from-transparent to-violet-500/60"></span>
       <span class="text-xs uppercase font-extrabold tracking-[4px] text-violet-300 font-mono">by : CikguMie</span>
       <span class="h-[1px] w-8 bg-gradient-to-l from-transparent to-violet-500/60"></span>
     </div>
     <p class="text-sm md:text-base text-[var(--text-muted)] max-w-lg mx-auto mt-4 font-medium leading-relaxed">
-      A collection of high-fidelity, responsive layouts and custom styling sandboxes designed to push the boundaries of modern CSS.
+      A collection of high-fidelity, responsive layouts and custom styling sandboxes designed to push the boundaries of
+      modern CSS.
     </p>
   </header>
 
@@ -181,7 +205,8 @@
 
   <!-- ===== SEARCH & FILTER ===== -->
   <div class="lab-search">
-    <input type="text" id="lab-search-input" placeholder="Search labs by name, category or keyword..." aria-label="Search labs">
+    <input type="text" id="lab-search-input" placeholder="Search labs by name, category or keyword..."
+      aria-label="Search labs">
     <div class="cat-filters" id="cat-filters">
       <button class="cat-pill active" data-cat="all">All</button>
       <button class="cat-pill" data-cat="layout">Layout</button>
@@ -193,7 +218,9 @@
   </div>
 
   <!-- ===== ACTIVE LABS ===== -->
-  <h2 class="section-label" id="section-active">Active Labs</h2>
+  <h2 class="section-label" id="section-active">Active Labs <span
+      style="font-size:0.65rem;font-weight:400;color:var(--text-muted);text-transform:none;letter-spacing:0;">— Now with
+      Adaptive Mode, Micro-Interactions & Accessibility</span></h2>
   <main class="labs-grid">
 
     <!-- LAB 1: MOSAIC DYNAMIC LAYOUT -->
@@ -202,16 +229,23 @@
         <div class="lab-status">
           <span class="badge badge-active">Active Lab</span>
           <div class="lab-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" />
             </svg>
           </div>
         </div>
         <h2 class="lab-title">Grid Mosaic Reflow</h2>
         <p class="lab-desc">
-          Test interactive responsive reflow layouts using Grid Areas. Resize live to view clean column switches from Mobile up to Desktop.
+          Test interactive responsive reflow layouts using Grid Areas. Resize live to view clean column switches from
+          Mobile up to Desktop.
         </p>
-        
+        <div class="trend-tags" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;">
+          <span class="badge badge-new" style="font-size:0.6rem;">#bento-grids</span>
+          <span class="badge badge-new" style="font-size:0.6rem;">#responsive</span>
+        </div>
+
         <div class="mini-bento-preview" aria-hidden="true">
           <div class="mini-item"></div>
           <div class="mini-item"></div>
@@ -231,20 +265,31 @@
         <div class="lab-status">
           <span class="badge badge-active">Active Lab</span>
           <div class="lab-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-3.83" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-3.83" />
             </svg>
           </div>
         </div>
         <h2 class="lab-title">Design Styles Sandbox</h2>
         <p class="lab-desc">
-          Compare 10 different design languages: Glassmorphism, Neumorphism, Claymorphism, Brutalism, Cyberpunk, Bauhaus and more in an interactive widget.
+          Compare 10+ design languages with an interactive widget. Now with Emotion Mode — switch between Calm,
+          Energetic & Focus moods.
         </p>
+        <div class="trend-tags" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;">
+          <span class="badge badge-new" style="font-size:0.6rem;">#off-white</span>
+          <span class="badge badge-new" style="font-size:0.6rem;">#emotionally-intelligent</span>
+        </div>
         <div class="mini-theme-preview" aria-label="Theme selector toggle dots">
-          <button class="preview-dot active" data-theme="default" style="background:#38bdf8" aria-label="Default Theme" title="Default"></button>
-          <button class="preview-dot" data-theme="cyberpunk" style="background:#f472b6" aria-label="Cyberpunk Theme" title="Cyberpunk"></button>
-          <button class="preview-dot" data-theme="emerald-forest" style="background:#10b981" aria-label="Emerald Forest Theme" title="Emerald Forest"></button>
-          <button class="preview-dot" data-theme="sunset-burn" style="background:#f97316" aria-label="Sunset Burn Theme" title="Sunset Burn"></button>
+          <button class="preview-dot active" data-theme="default" style="background:#38bdf8" aria-label="Default Theme"
+            title="Default"></button>
+          <button class="preview-dot" data-theme="cyberpunk" style="background:#f472b6" aria-label="Cyberpunk Theme"
+            title="Cyberpunk"></button>
+          <button class="preview-dot" data-theme="emerald-forest" style="background:#10b981"
+            aria-label="Emerald Forest Theme" title="Emerald Forest"></button>
+          <button class="preview-dot" data-theme="sunset-burn" style="background:#f97316" aria-label="Sunset Burn Theme"
+            title="Sunset Burn"></button>
         </div>
       </div>
       <div class="card-footer">
@@ -261,22 +306,42 @@
         <div class="lab-status">
           <span class="badge badge-active">Active Lab</span>
           <div class="lab-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
         </div>
         <h2 class="lab-title">Motion Forge</h2>
         <p class="lab-desc">
-          Interactive Animation Playground — Build and test keyframe animations with easing functions, delay/duration sliders, easing curve canvas, and live code preview.
+          Interactive Animation Playground — Build keyframe animations with easing controls. Now with Micro-Interaction
+          presets for buttons, toggles, and loading states.
         </p>
+        <div class="trend-tags" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;">
+          <span class="badge badge-new" style="font-size:0.6rem;">#micro-interactions</span>
+          <span class="badge badge-new" style="font-size:0.6rem;">#animation</span>
+        </div>
         <div class="mini-bento-preview" aria-hidden="true" style="grid-template-columns:1fr 1fr">
-          <div class="mini-item" style="background:hsl(var(--accent-purple));animation:pulse-mini 1s ease infinite"></div>
-          <div class="mini-item" style="background:hsl(var(--accent-pink));animation:pulse-mini 1s ease infinite 0.3s"></div>
+          <div class="mini-item" style="background:hsl(var(--accent-purple));animation:pulse-mini 1s ease infinite">
+          </div>
+          <div class="mini-item" style="background:hsl(var(--accent-pink));animation:pulse-mini 1s ease infinite 0.3s">
+          </div>
         </div>
         <style>
-          @keyframes pulse-mini { 0%,100%{opacity:0.3} 50%{opacity:1;transform:scale(1.1)} }
+          @keyframes pulse-mini {
+
+            0%,
+            100% {
+              opacity: 0.3
+            }
+
+            50% {
+              opacity: 1;
+              transform: scale(1.1)
+            }
+          }
         </style>
       </div>
       <div class="card-footer">
@@ -290,15 +355,23 @@
         <div class="lab-status">
           <span class="badge badge-active">Active Lab</span>
           <div class="lab-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-3.83" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-3.83" />
             </svg>
           </div>
         </div>
         <h2 class="lab-title">Chroma Lab</h2>
         <p class="lab-desc">
-          Color Palette Studio — Generate color harmonies (monochromatic, triadic, tetradic, etc.), check WCAG contrast ratios, and export CSS custom properties.
+          Color Palette Studio — Generate harmonies (monochromatic, triadic, tetradic), WCAG contrast checker, and
+          Off-White comfort palettes for reduced eye strain.
         </p>
+        <div class="trend-tags" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;">
+          <span class="badge badge-new" style="font-size:0.6rem;">#color-theory</span>
+          <span class="badge badge-new" style="font-size:0.6rem;">#off-white</span>
+          <span class="badge badge-new" style="font-size:0.6rem;">#a11y</span>
+        </div>
         <div class="mini-theme-preview" aria-hidden="true" style="gap:6px">
           <span style="width:20px;height:20px;border-radius:4px;background:#8b5cf6"></span>
           <span style="width:20px;height:20px;border-radius:4px;background:#ec4899"></span>
@@ -318,17 +391,23 @@
         <div class="lab-status">
           <span class="badge badge-active">Active Lab</span>
           <div class="lab-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
           </div>
         </div>
         <h2 class="lab-title">ShadowCraft</h2>
         <p class="lab-desc">
-          Box Shadow & Filter Studio — Multi-layer shadows, backdrop-filter effects (blur, brightness, contrast), preset styles, and real-time CSS preview with copy-to-clipboard.
+          Box Shadow & Filter Studio — Multi-layer shadows, backdrop-filter effects (blur, brightness, contrast), preset
+          styles, and real-time CSS preview with copy-to-clipboard.
         </p>
-        <div class="mini-bento-preview" aria-hidden="true" style="display:flex;align-items:center;justify-content:center">
-          <div style="width:40px;height:40px;background:#8b5cf6;border-radius:8px;box-shadow:4px 4px 15px rgba(139,92,246,0.5),-2px -2px 10px rgba(236,72,153,0.3)"></div>
+        <div class="mini-bento-preview" aria-hidden="true"
+          style="display:flex;align-items:center;justify-content:center">
+          <div
+            style="width:40px;height:40px;background:#8b5cf6;border-radius:8px;box-shadow:4px 4px 15px rgba(139,92,246,0.5),-2px -2px 10px rgba(236,72,153,0.3)">
+          </div>
         </div>
       </div>
       <div class="card-footer">
@@ -342,14 +421,16 @@
         <div class="lab-status">
           <span class="badge badge-active">Active Lab</span>
           <div class="lab-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" />
             </svg>
           </div>
         </div>
         <h2 class="lab-title">TypeScale</h2>
         <p class="lab-desc">
-          Typography Scale Tool — Generate modular type scales with interactive ratio adjuster (Golden Ratio, Perfect Fourth, etc.), font pairing preview, and fluid clamp() CSS code export.
+          Typography Scale Tool — Generate modular type scales with interactive ratio adjuster (Golden Ratio, Perfect
+          Fourth, etc.), font pairing preview, and fluid clamp() CSS code export.
         </p>
         <div class="mini-theme-preview" aria-hidden="true" style="flex-direction:column;gap:4px;height:80px">
           <div style="height:8px;background:#a78bfa;width:90%;border-radius:4px"></div>
@@ -374,13 +455,16 @@
         <div class="lab-status">
           <span class="badge badge-new">Coming Soon</span>
           <div class="lab-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
             </svg>
           </div>
         </div>
         <h2 class="lab-title">Layout Forge</h2>
-        <p class="lab-desc">Visual CSS Grid & Flexbox builder — Drag to create, arrange, and export responsive layout code.</p>
+        <p class="lab-desc">Visual CSS Grid & Flexbox builder — Drag to create, arrange, and export responsive layout
+          code.</p>
         <div class="mini-bento-preview" aria-hidden="true" style="grid-template-columns:1fr 1fr 1fr 1fr">
           <div class="mini-item" style="grid-column:span 2"></div>
           <div class="mini-item"></div>
@@ -398,15 +482,19 @@
         <div class="lab-status">
           <span class="badge badge-new">Coming Soon</span>
           <div class="lab-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
             </svg>
           </div>
         </div>
         <h2 class="lab-title">Icon Studio</h2>
-        <p class="lab-desc">SVG Icon editor with stroke/color controls, export as data-uri, React/Vue component strings.</p>
+        <p class="lab-desc">SVG Icon editor with stroke/color controls, export as data-uri, React/Vue component strings.
+        </p>
         <div class="mini-theme-preview" aria-hidden="true" style="gap:6px">
-          <span style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#ec4899)"></span>
+          <span
+            style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#ec4899)"></span>
           <span style="width:24px;height:24px;border-radius:8px;border:2px solid #8b5cf6"></span>
           <span style="width:24px;height:24px;clip-path:polygon(50% 0,100% 100%,0 100%);background:#8b5cf6"></span>
         </div>
@@ -422,13 +510,16 @@
         <div class="lab-status">
           <span class="badge badge-new">Coming Soon</span>
           <div class="lab-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
         </div>
         <h2 class="lab-title">Query Builder</h2>
-        <p class="lab-desc">Media Query Generator — Drag breakpoint handles, preview responsive layouts, export production-ready @media CSS blocks.</p>
+        <p class="lab-desc">Media Query Generator — Drag breakpoint handles, preview responsive layouts, export
+          production-ready @media CSS blocks.</p>
         <div class="mini-theme-preview" aria-hidden="true" style="gap:6px">
           <div style="flex:1;height:6px;background:#8b5cf6;border-radius:3px"></div>
           <div style="flex:2;height:6px;background:#ec4899;border-radius:3px"></div>
@@ -440,78 +531,95 @@
       </div>
     </article>
 
-    <!-- LAB 10: SCROLL & REVEAL -->
-    <article class="lab-card locked" data-category="animation">
+    <!-- LAB 10: DEPTH FORGE -->
+    <a href="depth-forge.html" class="lab-card" data-category="design"
+      style="text-decoration:none;color:inherit;display:flex;flex-direction:column;justify-content:space-between;">
       <div>
         <div class="lab-status">
-          <span class="badge badge-new">Coming Soon</span>
+          <span class="badge badge-new">NEW</span>
           <div class="lab-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
           </div>
         </div>
-        <h2 class="lab-title">Scroll & Reveal</h2>
-        <p class="lab-desc">Scroll-driven animation builder with Intersection Observer, parallax, and scroll-triggered timeline.</p>
-        <div class="mini-bento-preview" aria-hidden="true" style="grid-template-columns:1fr 1fr 1fr">
-          <div class="mini-item" style="height:5px"></div>
-          <div class="mini-item" style="height:5px;opacity:0.6"></div>
-          <div class="mini-item" style="height:5px;opacity:0.3"></div>
+        <h2 class="lab-title">Depth Forge</h2>
+        <p class="lab-desc">Explore 3D depth with CSS transforms, shadows, perspective, and parallax layering in an
+          interactive sandbox.</p>
+        <div class="mini-bento-preview" aria-hidden="true" style="grid-template-columns:1fr 1fr;gap:4px">
+          <div class="mini-item" style="height:10px;background:linear-gradient(135deg,#7c3aed,#a78bfa)"></div>
+          <div class="mini-item" style="height:10px;background:linear-gradient(135deg,#f472b6,#ec4899);opacity:0.7">
+          </div>
         </div>
       </div>
       <div class="card-footer">
-        <span class="footer-action" style="color:var(--text-muted)">Coming Soon &nbsp;&rarr;</span>
+        <span class="footer-action">Open Lab &nbsp;&rarr;</span>
       </div>
-    </article>
+    </a>
 
-    <!-- LAB 11: GRADIENT STUDIO -->
-    <article class="lab-card locked" data-category="design">
+    <!-- LAB 11: A11Y INSPECTOR -->
+    <a href="a11y-inspector.html" class="lab-card" data-category="accessibility"
+      style="text-decoration:none;color:inherit;display:flex;flex-direction:column;justify-content:space-between;">
       <div>
         <div class="lab-status">
-          <span class="badge badge-new">Coming Soon</span>
+          <span class="badge badge-new">NEW</span>
           <div class="lab-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
           </div>
         </div>
-        <h2 class="lab-title">Gradient Studio</h2>
-        <p class="lab-desc">Visual gradient builder with multi-stop controls, angle/radial type, and CSS/React export.</p>
-        <div class="mini-theme-preview" aria-hidden="true" style="width:100%;height:30px;border-radius:8px;background:linear-gradient(135deg,#8b5cf6,#ec4899,#06b6d4)"></div>
+        <h2 class="lab-title">A11y Inspector</h2>
+        <p class="lab-desc">Audit WCAG contrast ratios, test font sizes/weights, explore focus indicators, and inspect
+          ARIA accessibility standards.</p>
+        <div class="mini-theme-preview" aria-hidden="true" style="gap:4px;justify-content:center">
+          <span style="width:20px;height:20px;border-radius:4px;background:#34d399"></span>
+          <span style="width:20px;height:20px;border-radius:4px;background:#fbbf24"></span>
+          <span style="width:20px;height:20px;border-radius:4px;background:#ef4444"></span>
+        </div>
       </div>
       <div class="card-footer">
-        <span class="footer-action" style="color:var(--text-muted)">Coming Soon &nbsp;&rarr;</span>
+        <span class="footer-action">Open Lab &nbsp;&rarr;</span>
       </div>
-    </article>
+    </a>
 
-    <!-- LAB 12: COMPONENT PLAYGROUND -->
-    <article class="lab-card locked" data-category="design">
+    <!-- LAB 12: ASYMMETRY LAB -->
+    <a href="asymmetry-lab.html" class="lab-card" data-category="design"
+      style="text-decoration:none;color:inherit;display:flex;flex-direction:column;justify-content:space-between;">
       <div>
         <div class="lab-status">
-          <span class="badge badge-new">Coming Soon</span>
+          <span class="badge badge-new">NEW</span>
           <div class="lab-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
             </svg>
           </div>
         </div>
-        <h2 class="lab-title">Component Playground</h2>
-        <p class="lab-desc">Build and customize UI components (buttons, cards, modals) with real-time CSS editing and export.</p>
-        <div class="mini-theme-preview" aria-hidden="true" style="gap:6px;flex-wrap:wrap;justify-content:center">
-          <span style="width:30px;height:20px;border-radius:4px;background:#8b5cf6"></span>
-          <span style="width:30px;height:20px;border-radius:10px;background:#ec4899"></span>
-          <span style="width:30px;height:20px;border-radius:4px;border:2px solid #8b5cf6;background:transparent"></span>
+        <h2 class="lab-title">Asymmetry Lab</h2>
+        <p class="lab-desc">Create broken grids, overlapping cascades, offset layouts, and non-standard asymmetrical
+          compositions with real-time controls.</p>
+        <div class="mini-bento-preview" aria-hidden="true" style="grid-template-columns:2fr 1fr 1fr;gap:3px">
+          <div class="mini-item" style="height:10px;background:linear-gradient(135deg,#f59e0b,#e85d04)"></div>
+          <div class="mini-item" style="height:10px;background:linear-gradient(135deg,#ec4899,#be185d)"></div>
+          <div class="mini-item" style="height:10px;background:linear-gradient(135deg,#8b5cf6,#6d28d9)"></div>
         </div>
       </div>
       <div class="card-footer">
-        <span class="footer-action" style="color:var(--text-muted)">Coming Soon &nbsp;&rarr;</span>
+        <span class="footer-action">Open Lab &nbsp;&rarr;</span>
       </div>
-    </article>
+    </a>
 
   </main>
-  
+
   <!-- Footer -->
-  <footer style="text-align:center;padding:40px 24px;color:var(--text-muted);font-size:0.75rem;border-top:1px solid var(--border-glass);margin-top:40px">
+  <footer
+    style="text-align:center;padding:40px 24px;color:var(--text-muted);font-size:0.75rem;border-top:1px solid var(--border-glass);margin-top:40px">
     <span class="font-semibold text-white/40">UI Craft Labs</span> &mdash; Built with ❤️ for designers & developers
   </footer>
 
@@ -519,4 +627,5 @@
   <script src="script.js"></script>
 
 </body>
+
 </html>

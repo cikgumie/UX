@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asymmetry Lab — Broken Grid & Layout Playground</title>
+    <meta name="description"
+        content="Explore asymmetrical layouts, broken grids, overlapping elements, and offset designs for creative, non-standard interfaces.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- TailwindCSS v3 CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0b0914;
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(139, 92, 246, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139, 92, 246, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .asym-header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .asym-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f59e0b, #eab308, #e85d04);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .asym-header h1 span {
+            background: linear-gradient(135deg, #f472b6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .asym-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .controls-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 16px;
+        }
+
+        .control-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .control-label span {
+            color: #fbbf24;
+        }
+
+        .control-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            border-radius: 4px;
+            background: rgba(251, 191, 36, 0.2);
+            outline: none;
+        }
+
+        .control-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #f59e0b;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(251, 191, 36, 0.4);
+        }
+
+        .control-select {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.3);
+            color: #e2e8f0;
+            font-size: 0.75rem;
+            font-family: 'Fira Code', monospace;
+            outline: none;
+        }
+
+        /* Preview area */
+        .preview-area {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 24px;
+        }
+
+        .layout-stage {
+            width: 100%;
+            min-height: 360px;
+            border-radius: 16px;
+            background: radial-gradient(ellipse at 30% 40%, rgba(251, 191, 36, 0.05) 0%, transparent 60%);
+            position: relative;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-start;
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        /* Block styles for asymmetrical layout */
+        .layout-block {
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: #fff;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .layout-block::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+            pointer-events: none;
+        }
+
+        /* Asymmetry presets */
+        .layout-block.block-1 {
+            background: linear-gradient(135deg, #f59e0b, #e85d04);
+        }
+
+        .layout-block.block-2 {
+            background: linear-gradient(135deg, #ec4899, #be185d);
+        }
+
+        .layout-block.block-3 {
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+        }
+
+        .layout-block.block-4 {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+        }
+
+        .layout-block.block-5 {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .layout-block.overlap {
+            position: absolute;
+        }
+
+        .layout-block.draggable {
+            cursor: grab;
+        }
+
+        .layout-block.draggable:active {
+            cursor: grabbing;
+        }
+
+        @media (max-width: 768px) {
+            .asym-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+
+    <!-- Navigation -->
+    <nav class="max-w-[1200px] w-full mx-auto px-6 pt-6 flex justify-between items-center relative z-10">
+        <a href="index.html"
+            class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to UI Craft Labs
+        </a>
+        <span
+            class="text-xs font-mono px-3 py-1 rounded-full bg-slate-900/60 border border-yellow-500/20 text-yellow-400">Lab
+            07: Asymmetry Lab</span>
+    </nav>
+
+    <!-- Header -->
+    <header class="asym-header">
+        <p class="font-mono text-xs uppercase tracking-[4px] text-yellow-400 mb-2">Broken Grid & Layout Lab</p>
+        <h1>Asymmetry <span>Lab</span></h1>
+        <p class="text-slate-400 text-sm max-w-lg mx-auto mt-3">Explore asymmetrical layouts, overlapping elements,
+            offset positioning, and creative grid-breaking designs.</p>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="asym-container">
+        <!-- LEFT: Controls -->
+        <section class="controls-panel">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono mb-4">Layout Controls</h2>
+
+            <div class="control-group">
+                <label class="control-label">Layout Preset</label>
+                <select id="layout-preset" class="control-select">
+                    <option value="balanced">Balanced Grid</option>
+                    <option value="asym-1" selected>Asymmetric 1 (Hero)</option>
+                    <option value="asym-2">Asymmetric 2 (Diagonal)</option>
+                    <option value="asym-3">Asymmetric 3 (Zigzag)</option>
+                    <option value="overlap">Overlap Cascade</option>
+                    <option value="broken">Broken Grid</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Offset Intensity <span id="offset-label">50%</span></label>
+                <input type="range" id="offset-slider" class="control-slider" min="0" max="100" value="50">
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Block Size</label>
+                <select id="size-select" class="control-select">
+                    <option value="small">Small (compact)</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="large">Large (expanded)</option>
+                    <option value="random">Random sizes</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Gap <span id="gap-label">12px</span></label>
+                <input type="range" id="gap-slider" class="control-slider" min="0" max="40" value="12">
+            </div>
+
+            <div class="control-group" style="margin-top:20px;">
+                <button id="reset-asym-btn" class="action-btn"
+                    style="width:100%;padding:10px;border-radius:12px;font-size:0.7rem;font-weight:700;border:none;cursor:pointer;background:rgba(255,255,255,0.05);color:#94a3b8;border:1px solid rgba(255,255,255,0.08);">↺
+                    Reset Layout</button>
+            </div>
+        </section>
+
+        <!-- RIGHT: Preview -->
+        <section class="preview-area">
+            <div class="layout-stage" id="layout-stage">
+                <div class="layout-block block-1" style="width:120px;height:100px;">01</div>
+                <div class="layout-block block-2" style="width:160px;height:120px;">02</div>
+                <div class="layout-block block-3" style="width:100px;height:140px;">03</div>
+                <div class="layout-block block-4" style="width:130px;height:90px;">04</div>
+                <div class="layout-block block-5" style="width:150px;height:110px;">05</div>
+            </div>
+
+            <!-- Code output -->
+            <div
+                style="margin-top:16px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.06);border-radius:14px;overflow:hidden;">
+                <div
+                    style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:rgba(255,255,255,0.03);font-family:'Fira Code',monospace;font-size:0.65rem;color:#64748b;border-bottom:1px solid rgba(255,255,255,0.04);">
+                    <span>CSS Grid Properties</span>
+                    <button id="copy-css-btn"
+                        style="background:none;border:none;color:#64748b;font-size:0.75rem;cursor:pointer;">📋
+                        Copy</button>
+                </div>
+                <pre class="code-block"
+                    style="padding:14px;font-family:'Fira Code',monospace;font-size:0.7rem;line-height:1.6;color:#cbd5e1;white-space:pre-wrap;min-height:80px;"
+                    id="code-block">/* Select a layout preset to generate CSS */</pre>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const stage = document.getElementById('layout-stage');
+            const blocks = stage.querySelectorAll('.layout-block');
+            const presetSelect = document.getElementById('layout-preset');
+            const offsetSlider = document.getElementById('offset-slider');
+            const offsetLabel = document.getElementById('offset-label');
+            const sizeSelect = document.getElementById('size-select');
+            const gapSlider = document.getElementById('gap-slider');
+            const gapLabel = document.getElementById('gap-label');
+            const resetBtn = document.getElementById('reset-asym-btn');
+            const codeBlock = document.getElementById('code-block');
+            const copyBtn = document.getElementById('copy-css-btn');
+
+            const SIZES = {
+                small: { w: [80, 60, 70, 90, 65], h: [60, 80, 70, 65, 75] },
+                medium: { w: [120, 160, 100, 130, 150], h: [100, 120, 140, 90, 110] },
+                large: { w: [180, 220, 160, 200, 170], h: [150, 140, 180, 160, 130] },
+                random: () => {
+                    const ws = [60, 90, 120, 150, 180, 200, 130, 160, 100, 140];
+                    const hs = [60, 80, 100, 120, 140, 160, 90, 110, 130, 150];
+                    return {
+                        w: blocks.length > 0 ? Array.from(blocks).map(() => ws[Math.floor(Math.random() * ws.length)]) : [],
+                        h: blocks.length > 0 ? Array.from(blocks).map(() => hs[Math.floor(Math.random() * hs.length)]) : []
+                    };
+                }
+            };
+
+            const PRESETS = {
+                balanced: {
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: '12px'
+                },
+                'asym-1': {
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                    gap: '12px'
+                },
+                'asym-2': {
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: '8px'
+                },
+                'asym-3': {
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'flex-end',
+                    alignItems: 'flex-start',
+                    gap: '16px'
+                },
+                overlap: {
+                    display: 'block',
+                    position: 'relative',
+                    height: '360px'
+                },
+                broken: {
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-evenly',
+                    alignItems: 'stretch',
+                    gap: '8px'
+                }
+            };
+
+            function updateLayout() {
+                const preset = presetSelect.value;
+                const offset = parseInt(offsetSlider.value) / 100;
+                const size = sizeSelect.value;
+
+                offsetLabel.textContent = `${offsetSlider.value}%`;
+                gapLabel.textContent = `${gapSlider.value}px`;
+
+                // Apply preset styles
+                const presetStyle = PRESETS[preset] || PRESETS['asym-1'];
+                Object.assign(stage.style, presetStyle);
+                stage.style.gap = `${gapSlider.value}px`;
+
+                if (preset === 'overlap') {
+                    stage.style.display = 'block';
+                    stage.style.position = 'relative';
+                    stage.style.height = '360px';
+                }
+
+                // Apply sizes
+                let sizes;
+                if (size === 'random') {
+                    sizes = SIZES.random();
+                } else {
+                    sizes = SIZES[size];
+                }
+
+                blocks.forEach((block, i) => {
+                    const w = sizes.w[i] || 100;
+                    const h = sizes.h[i] || 100;
+
+                    block.style.width = `${w}px`;
+                    block.style.height = `${h}px`;
+
+                    // Remove positioning for non-overlap presets
+                    if (preset !== 'overlap') {
+                        block.style.position = '';
+                        block.style.top = '';
+                        block.style.left = '';
+                        block.style.margin = '';
+                        block.style.transform = '';
+
+                        // Apply offset for asymmetric presets
+                        if (preset !== 'balanced') {
+                            const xOff = (i % 2 === 0 ? offset : -offset) * 20;
+                            const yOff = (i < 2 ? -offset : offset) * 15;
+                            block.style.margin = `${yOff}px 0 0 ${xOff}px`;
+                        }
+                    } else {
+                        // Overlap: position in layers
+                        const xPos = 20 + (i * 60) + (offset * i * 20);
+                        const yPos = 30 + (i * 50) + (offset * i * 10);
+                        block.style.position = 'absolute';
+                        block.style.top = `${Math.min(yPos, 280)}px`;
+                        block.style.left = `${Math.min(xPos, 240)}px`;
+                        block.style.zIndex = i + 1;
+                        block.style.margin = '0';
+                        block.style.transform = `rotate(${(i - 2) * offset * 5}deg)`;
+                    }
+                });
+
+                // Update code
+                updateCode(preset, offset);
+            }
+
+            function updateCode(preset, offset) {
+                let code = '';
+                switch (preset) {
+                    case 'balanced':
+                        code = `<span class="cmt">/* Balanced Grid Layout */</span>
+<span class="sel">.container</span> {
+  <span class="prop">display</span>: <span class="val">flex</span>;
+  <span class="prop">flex-wrap</span>: <span class="val">wrap</span>;
+  <span class="prop">justify-content</span>: <span class="val">center</span>;
+  <span class="prop">align-items</span>: <span class="val">center</span>;
+  <span class="prop">gap</span>: <span class="num">${gapSlider.value}px</span>;
+}`;
+                        break;
+                    case 'asym-1':
+                        code = `<span class="cmt">/* Asymmetric Hero Layout */</span>
+<span class="sel">.container</span> {
+  <span class="prop">display</span>: <span class="val">flex</span>;
+  <span class="prop">flex-wrap</span>: <span class="val">wrap</span>;
+  <span class="prop">justify-content</span>: <span class="val">flex-start</span>;
+  <span class="prop">gap</span>: <span class="num">${gapSlider.value}px</span>;
+}
+<span class="sel">.block:nth-child(odd)</span> {
+  <span class="prop">margin</span>: <span class="num">${Math.round(offset * 15)}px 0 0 ${Math.round(offset * 20)}px</span>;
+}`;
+                        break;
+                    case 'overlap':
+                        code = `<span class="cmt">/* Overlap Cascade */</span>
+<span class="sel">.container</span> {
+  <span class="prop">position</span>: <span class="val">relative</span>;
+  <span class="prop">height</span>: <span class="num">360px</span>;
+}
+<span class="sel">.block</span> {
+  <span class="prop">position</span>: <span class="val">absolute</span>;
+  <span class="prop">z-index</span>: <span class="val">auto</span>;
+  <span class="prop">transform</span>: <span class="val">rotate(var(--rot))</span>;
+}`;
+                        break;
+                    case 'broken':
+                        code = `<span class="cmt">/* Broken Grid */</span>
+<span class="sel">.container</span> {
+  <span class="prop">display</span>: <span class="val">flex</span>;
+  <span class="prop">flex-wrap</span>: <span class="val">wrap</span>;
+  <span class="prop">justify-content</span>: <span class="val">space-evenly</span>;
+  <span class="prop">align-items</span>: <span class="val">stretch</span>;
+  <span class="prop">gap</span>: <span class="num">${gapSlider.value}px</span>;
+}`;
+                        break;
+                    default:
+                        code = `<span class="cmt">/* Custom asymmetric layout */</span>`;
+                }
+                codeBlock.innerHTML = code;
+            }
+
+            // Event listeners
+            presetSelect.addEventListener('change', updateLayout);
+            offsetSlider.addEventListener('input', updateLayout);
+            sizeSelect.addEventListener('change', updateLayout);
+            gapSlider.addEventListener('input', updateLayout);
+
+            resetBtn.addEventListener('click', () => {
+                presetSelect.value = 'asym-1';
+                offsetSlider.value = 50;
+                sizeSelect.value = 'medium';
+                gapSlider.value = 12;
+                updateLayout();
+            });
+
+            // Copy
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    const raw = codeBlock.textContent || codeBlock.innerText;
+                    navigator.clipboard.writeText(raw).then(() => {
+                        copyBtn.textContent = '✅ Copied!';
+                        setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
+                    });
+                });
+            }
+
+            // Init
+            updateLayout();
+        });
+    </script>
+</body>
+
+</html>

@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const blob1 = document.getElementById('blob-1');
   const blob2 = document.getElementById('blob-2');
   const blob3 = document.getElementById('blob-3');
+  const emotionBtns = document.querySelectorAll('.emotion-btn');
 
   // Widget elements
   const tempVal = document.getElementById('temp-val');
@@ -109,18 +110,107 @@ document.addEventListener('DOMContentLoaded', () => {
 }`
   };
 
+  // ===== EMOTION MODE (Trend #8) =====
+  const EMOTION_STYLES = {
+    calm: {
+      name: 'Calm',
+      bodyBg: '#0a0d1a',
+      contrast: 'reduced',
+      saturation: 'reduced',
+      brightness: 'soft'
+    },
+    energetic: {
+      name: 'Energetic',
+      bodyBg: '#0b0014',
+      contrast: 'high',
+      saturation: 'vibrant',
+      brightness: 'bold'
+    },
+    focus: {
+      name: 'Focus',
+      bodyBg: '#06080f',
+      contrast: 'crisp',
+      saturation: 'mono',
+      brightness: 'clear'
+    }
+  };
+
+  emotionBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      emotionBtns.forEach(b => {
+        b.style.background = 'transparent';
+        b.style.borderColor = 'rgba(255,255,255,0.06)';
+        b.style.color = 'var(--text-muted)';
+      });
+      btn.style.background = 'rgba(139,92,246,0.1)';
+      btn.style.borderColor = 'transparent';
+      btn.style.color = '#fff';
+
+      const emotion = btn.dataset.emotion;
+      const style = EMOTION_STYLES[emotion];
+
+      // Apply emotion data attribute to container
+      container.setAttribute('data-emotion', emotion);
+
+      // Apply emotion CSS variables to container
+      const mockupCard = document.getElementById('mockup-card');
+
+      // Remove existing emotion style tag
+      const existingEmotionStyle = document.getElementById('emotion-style');
+      if (existingEmotionStyle) existingEmotionStyle.remove();
+
+      const emotionStyle = document.createElement('style');
+      emotionStyle.id = 'emotion-style';
+
+      if (emotion === 'calm') {
+        mockupCard.style.filter = 'brightness(0.9) saturate(0.7)';
+        document.body.style.backgroundColor = '#0a0d1a';
+        emotionStyle.textContent = `
+          .mockup-card { --emotion-hue: 220; --emotion-saturation: 40%; }
+          .widget-btn { transition: all 0.6s ease; }
+        `;
+      } else if (emotion === 'energetic') {
+        mockupCard.style.filter = 'brightness(1.1) saturate(1.3) contrast(1.1)';
+        document.body.style.backgroundColor = '#0b0014';
+        emotionStyle.textContent = `
+          .mockup-card { --emotion-hue: 330; --emotion-saturation: 90%; }
+          .climate-dial { animation: pulse-glow 2s ease infinite; }
+        `;
+      } else {
+        mockupCard.style.filter = 'brightness(1) saturate(0.85) contrast(1.2)';
+        document.body.style.backgroundColor = '#06080f';
+        emotionStyle.textContent = `
+          .mockup-card { --emotion-hue: 210; --emotion-saturation: 10%; }
+          .widget-info-row { letter-spacing: 1px; }
+        `;
+      }
+      document.head.appendChild(emotionStyle);
+
+      // Update CSS code block to show emotion info
+      const currentStyle = styleNameLabel.textContent.trim().toLowerCase().replace(/\s+/g, '-');
+      const baseCode = STYLES_CSS_CODE[currentStyle] || STYLES_CSS_CODE['glassmorphism'];
+      cssCodeBlock.innerHTML = baseCode + `\n\n<span class="cmt">/* 🧠 Emotion: ${style.name} */</span>\n<span class="cmt">/* Filter: ${mockupCard.style.filter} */</span>`;
+
+      showNotification(`🧠 Emotion Mode: ${style.name}`);
+    });
+  });
+
   // Switch Design Styles
   styleTabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const selectedStyle = tab.dataset.style;
-      
+
+      // Reset emotion filter when switching styles
+      const mockupCard = document.getElementById('mockup-card');
+      mockupCard.style.filter = '';
+
       // Update sidebar button states
       styleTabs.forEach(btn => btn.classList.remove('active'));
       tab.classList.add('active');
 
       // Update workspace container styling class
       container.className = `playground-container style-${selectedStyle}`;
-      
+
       // Update label and CSS box
       styleNameLabel.textContent = tab.textContent.trim();
       cssCodeBlock.innerHTML = STYLES_CSS_CODE[selectedStyle];
@@ -191,16 +281,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const rect = sliderTrack.getBoundingClientRect();
     let percentage = (clientX - rect.left) / rect.width;
     percentage = Math.max(0, Math.min(1, percentage));
-    
+
     // Calculate new temperature value
     const newTemp = Math.round(minTemp + percentage * (maxTemp - minTemp));
     currentTemp = newTemp;
-    
+
     // Update interface representation
     tempVal.textContent = `${currentTemp}°C`;
     sliderThumb.style.left = `${percentage * 100}%`;
     sliderFill.style.width = `${percentage * 100}%`;
-    
+
     // Set matching humidity indicator dynamically
     const correspondingHumidity = Math.round(75 - percentage * 30);
     infoHumidity.textContent = `${correspondingHumidity}%`;
@@ -297,14 +387,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function showNotification(msg) {
     const existing = document.querySelector('.theme-toast');
     if (existing) existing.remove();
-    
+
     const toast = document.createElement('div');
     toast.className = 'theme-toast fixed bottom-6 right-6 bg-slate-900 border border-violet-500/30 text-white font-semibold text-xs px-4 py-3 rounded-xl shadow-2xl z-50 transition-all';
     toast.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
     toast.textContent = msg;
-    
+
     document.body.appendChild(toast);
-    
+
     setTimeout(() => {
       toast.remove();
     }, 2500);

@@ -240,7 +240,7 @@ ${kf.css}
 
   // Cubic bezier helper
   function bezier(x1, y1, x2, y2) {
-    return function(t) {
+    return function (t) {
       // Approximate using de Casteljau
       let cx = 3 * x1;
       let bx = 3 * (x2 - x1) - cx;
@@ -259,6 +259,44 @@ ${kf.css}
       return ((ay * sample + by) * sample + cy) * sample;
     };
   }
+
+  // ===== Micro-Interaction Preset Handlers (Trend #4) =====
+  const microPresetBtns = document.querySelectorAll('.micro-preset-btn');
+
+  const MICRO_PRESETS = {
+    'custom': { anim: 'fade-in', easing: 'ease-in-out', duration: 800, delay: 0 },
+    'button-hover': { anim: 'pulse-glow', easing: 'ease', duration: 300, delay: 0 },
+    'button-click': { anim: 'scale-up', easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)', duration: 200, delay: 0 },
+    'toggle-switch': { anim: 'slide-in-left', easing: 'ease-out', duration: 250, delay: 0 },
+    'loading-dot': { anim: 'bounce', easing: 'ease-in-out', duration: 600, delay: 0 },
+    'skeleton': { anim: 'pulse-glow', easing: 'ease-in-out', duration: 1200, delay: 0 },
+    'notification': { anim: 'slide-up', easing: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)', duration: 400, delay: 0 }
+  };
+
+  microPresetBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      microPresetBtns.forEach(b => {
+        b.style.background = 'transparent';
+        b.style.color = 'var(--text-muted)';
+        b.style.borderColor = 'rgba(255,255,255,0.06)';
+      });
+      btn.style.background = 'rgba(139,92,246,0.15)';
+      btn.style.color = '#fff';
+      btn.style.borderColor = 'rgba(255,255,255,0.1)';
+
+      const preset = MICRO_PRESETS[btn.dataset.preset];
+      if (preset) {
+        animSelect.value = preset.anim;
+        easingSelect.value = preset.easing;
+        durationSlider.value = preset.duration;
+        durationVal.textContent = `${preset.duration}ms`;
+        delaySlider.value = preset.delay;
+        delayVal.textContent = `${preset.delay}ms`;
+        updateAnimation();
+        showNotification(`${btn.textContent.trim()} preset applied`);
+      }
+    });
+  });
 
   // ===== Event listeners =====
   animSelect.addEventListener('change', updateAnimation);
@@ -310,6 +348,29 @@ ${kf.css}
         setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
       });
     });
+  }
+
+  // ===== Toast notification =====
+  function showNotification(msg) {
+    const existing = document.querySelector('.theme-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'theme-toast fixed bottom-6 right-6 bg-slate-900 border border-violet-500/30 text-white font-semibold text-xs px-4 py-3 rounded-xl shadow-2xl z-50 transition-all transform translate-y-10 opacity-0';
+    toast.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+    toast.textContent = msg;
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.remove('translate-y-10', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+    }, 100);
+
+    setTimeout(() => {
+      toast.classList.add('translate-y-10', 'opacity-0');
+      setTimeout(() => toast.remove(), 400);
+    }, 2500);
   }
 
   // ===== Initialize =====

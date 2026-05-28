@@ -1,32 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chroma Lab — Color Palette Studio</title>
-  <meta name="description" content="Interactive color palette generator with harmony rules, contrast checking, and CSS variable export.">
+  <meta name="description"
+    content="Interactive color palette generator with harmony rules, contrast checking, and CSS variable export.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&family=Fira+Code:wght@400;500&display=swap"
+    rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="chroma-lab.css">
 </head>
+
 <body>
   <div class="bg-grid"></div>
 
   <nav class="max-w-[1200px] w-full mx-auto px-6 pt-6 flex justify-between items-center relative z-10">
-    <a href="index.html" class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+    <a href="index.html"
+      class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+        stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
       Back to UI Craft Labs
     </a>
-    <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-900/60 border border-violet-500/20 text-violet-400">Lab 04: Chroma Lab</span>
+    <span
+      class="text-xs font-mono px-3 py-1 rounded-full bg-slate-900/60 border border-violet-500/20 text-violet-400">Lab
+      04: Chroma Lab</span>
   </nav>
 
   <header class="chroma-header">
     <p class="font-mono text-xs uppercase tracking-[4px] text-violet-400 mb-2">Color Studio</p>
     <h1 class="chroma-title">Chroma <span>Lab</span></h1>
-    <p class="text-slate-400 text-sm max-w-lg mx-auto mt-3">Generate harmonious color palettes, check contrast ratios, and export CSS custom properties.</p>
+    <p class="text-slate-400 text-sm max-w-lg mx-auto mt-3">Generate harmonious color palettes, check contrast ratios,
+      and export CSS custom properties.</p>
   </header>
 
   <main class="chroma-container">
@@ -52,6 +64,13 @@
           <option value="tetradic">Tetradic (Rectangle)</option>
           <option value="analogous">Analogous</option>
           <option value="split-complementary">Split Complementary</option>
+          <optgroup label="Off-White Comfort Palettes (Trend #1)">
+            <option value="off-white">Off-White Comfort</option>
+            <option value="off-warm">Off-Warm Beige</option>
+            <option value="off-cool">Off-Cool Slate</option>
+            <option value="off-cream">Creamy Neutral</option>
+            <option value="off-sage">Sage Green</option>
+          </optgroup>
         </select>
       </div>
 
@@ -80,6 +99,30 @@
         </div>
       </div>
 
+      <div class="control-group">
+        <label class="control-label">Off-White Presets</label>
+        <div class="palette-presets" style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="palette-preset active" data-palette="default"
+            style="width:28px;height:28px;border-radius:8px;border:2px solid #8b5cf6;background:#09070f;cursor:pointer"
+            title="Default Dark"></button>
+          <button class="palette-preset" data-palette="off-white"
+            style="width:28px;height:28px;border-radius:8px;border:2px solid transparent;background:#faf8f5;cursor:pointer"
+            title="Off-White Comfort"></button>
+          <button class="palette-preset" data-palette="off-warm"
+            style="width:28px;height:28px;border-radius:8px;border:2px solid transparent;background:#f7f3ee;cursor:pointer"
+            title="Off-Warm Beige"></button>
+          <button class="palette-preset" data-palette="off-cool"
+            style="width:28px;height:28px;border-radius:8px;border:2px solid transparent;background:#f0f2f5;cursor:pointer"
+            title="Off-Cool Slate"></button>
+          <button class="palette-preset" data-palette="off-cream"
+            style="width:28px;height:28px;border-radius:8px;border:2px solid transparent;background:#fefcf5;cursor:pointer"
+            title="Creamy Neutral"></button>
+          <button class="palette-preset" data-palette="off-sage"
+            style="width:28px;height:28px;border-radius:8px;border:2px solid transparent;background:#f4f7f2;cursor:pointer"
+            title="Sage Green"></button>
+        </div>
+      </div>
+
       <button id="export-btn" class="export-btn">📋 Export CSS Variables</button>
     </section>
 
@@ -103,4 +146,5 @@
 
   <script src="chroma-lab.js"></script>
 </body>
+
 </html>

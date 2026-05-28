@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depth Forge — Depth & 3D UI Sandbox</title>
+    <meta name="description"
+        content="Explore UI depth, parallax, z-index layering, 3D transforms, and shadow intensity to create immersive interfaces.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- TailwindCSS v3 CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* ===== BASE RESET & THEME ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #080a14;
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(139, 92, 246, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139, 92, 246, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ===== HEADER ===== */
+        .depth-header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .depth-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a78bfa, #7c3aed, #6d28d9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .depth-header h1 span {
+            background: linear-gradient(135deg, #f472b6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ===== CONTAINER ===== */
+        .depth-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== CONTROLS PANEL ===== */
+        .controls-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 18px;
+        }
+
+        .control-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .control-label span {
+            color: #a78bfa;
+        }
+
+        .control-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            border-radius: 4px;
+            background: rgba(139, 92, 246, 0.2);
+            outline: none;
+        }
+
+        .control-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #7c3aed;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+        }
+
+        .control-select {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.3);
+            color: #e2e8f0;
+            font-size: 0.75rem;
+            font-family: 'Fira Code', monospace;
+            outline: none;
+        }
+
+        .action-btn {
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: #fff;
+        }
+
+        .action-btn.primary:hover {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* ===== PREVIEW AREA ===== */
+        .preview-area {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .depth-stage {
+            width: 100%;
+            height: 320px;
+            border-radius: 16px;
+            background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.06) 0%, transparent 70%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 800px;
+        }
+
+        .depth-object {
+            width: 120px;
+            height: 120px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: #fff;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Depth effect classes */
+        .depth-object.shallow {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transform: perspective(800px) translateZ(20px);
+        }
+
+        .depth-object.moderate {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: perspective(800px) translateZ(50px);
+        }
+
+        .depth-object.deep {
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.25), 0 0 60px rgba(139, 92, 246, 0.15);
+            transform: perspective(800px) translateZ(100px);
+        }
+
+        .depth-object.extreme {
+            box-shadow: 0 60px 150px rgba(0, 0, 0, 0.6), 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 100px rgba(139, 92, 246, 0.2);
+            transform: perspective(800px) translateZ(180px);
+        }
+
+        .depth-object.parallax {
+            transition: transform 0.1s ease;
+        }
+
+        /* Parallax layers */
+        .layer-bg,
+        .layer-fg {
+            position: absolute;
+            border-radius: inherit;
+            pointer-events: none;
+        }
+
+        .layer-bg {
+            width: 160px;
+            height: 160px;
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.2), rgba(124, 58, 237, 0.1));
+            transform: translateZ(-40px);
+            z-index: -1;
+        }
+
+        .layer-fg {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(244, 114, 182, 0.3), rgba(236, 72, 153, 0.2));
+            transform: translateZ(40px);
+            z-index: 2;
+            border-radius: 14px;
+            top: 10px;
+            right: 10px;
+        }
+
+        /* ===== CODE OUTPUT ===== */
+        .code-output {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.65rem;
+            color: #64748b;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 0.75rem;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #a78bfa;
+        }
+
+        .code-block {
+            padding: 14px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.7rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+            white-space: pre-wrap;
+            min-height: 120px;
+        }
+
+        .code-block .cmt {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .code-block .sel {
+            color: #f472b6;
+        }
+
+        .code-block .prop {
+            color: #818cf8;
+        }
+
+        .code-block .val {
+            color: #fbbf24;
+        }
+
+        .code-block .num {
+            color: #34d399;
+        }
+
+        @media (max-width: 768px) {
+            .depth-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+
+    <!-- Navigation -->
+    <nav class="max-w-[1200px] w-full mx-auto px-6 pt-6 flex justify-between items-center relative z-10">
+        <a href="index.html"
+            class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to UI Craft Labs
+        </a>
+        <span
+            class="text-xs font-mono px-3 py-1 rounded-full bg-slate-900/60 border border-violet-500/20 text-violet-400">Lab
+            05: Depth Forge</span>
+    </nav>
+
+    <!-- Header -->
+    <header class="depth-header">
+        <p class="font-mono text-xs uppercase tracking-[4px] text-violet-400 mb-2">3D Depth & Layering Lab</p>
+        <h1>Depth <span>Forge</span></h1>
+        <p class="text-slate-400 text-sm max-w-lg mx-auto mt-3">Explore depth perception through shadows, 3D transforms,
+            parallax motion, and z-index layering.</p>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="depth-container">
+        <!-- LEFT: Controls -->
+        <section class="controls-panel">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono mb-4">Depth Controls</h2>
+
+            <div class="control-group">
+                <label class="control-label">Depth Level <span id="depth-label">Moderate</span></label>
+                <input type="range" id="depth-slider" class="control-slider" min="0" max="100" value="50">
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Shadow Blur <span id="blur-label">30px</span></label>
+                <input type="range" id="blur-slider" class="control-slider" min="0" max="120" value="30">
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Shadow Opacity <span id="opacity-label">0.3</span></label>
+                <input type="range" id="opacity-slider" class="control-slider" min="0" max="100" value="30">
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Rotate X <span id="rotatex-label">0°</span></label>
+                <input type="range" id="rotatex-slider" class="control-slider" min="-30" max="30" value="0">
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Rotate Y <span id="rotatey-label">0°</span></label>
+                <input type="range" id="rotatey-slider" class="control-slider" min="-30" max="30" value="0">
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Z-Index Layer</label>
+                <select id="zindex-select" class="control-select">
+                    <option value="1">Layer 1 (Base)</option>
+                    <option value="2" selected>Layer 2 (Middle)</option>
+                    <option value="3">Layer 3 (Top)</option>
+                    <option value="4">Layer 4 (Overlay)</option>
+                </select>
+            </div>
+
+            <div class="control-group" style="margin-top:20px;">
+                <button id="reset-depth-btn" class="action-btn secondary" style="width:100%;">↺ Reset All</button>
+            </div>
+        </section>
+
+        <!-- RIGHT: Preview + Code -->
+        <section class="preview-area">
+            <div class="depth-stage" id="depth-stage">
+                <div class="depth-object moderate" id="depth-object">
+                    <div class="layer-bg" id="layer-bg"></div>
+                    <span id="depth-label-text">Forge</span>
+                    <div class="layer-fg" id="layer-fg"></div>
+                </div>
+            </div>
+
+            <!-- CODE OUTPUT -->
+            <div class="code-output">
+                <div class="code-header">
+                    <span>CSS Depth Properties</span>
+                    <button id="copy-css-btn" class="copy-btn" title="Copy CSS">📋 Copy</button>
+                </div>
+                <pre class="code-block" id="code-block">/* Adjust controls to generate depth properties */</pre>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // ===== DEPTH FORGE JS =====
+        document.addEventListener('DOMContentLoaded', () => {
+            const depthSlider = document.getElementById('depth-slider');
+            const blurSlider = document.getElementById('blur-slider');
+            const opacitySlider = document.getElementById('opacity-slider');
+            const rotateXSlider = document.getElementById('rotatex-slider');
+            const rotateYSlider = document.getElementById('rotatey-slider');
+            const zIndexSelect = document.getElementById('zindex-select');
+            const resetBtn = document.getElementById('reset-depth-btn');
+            const depthObject = document.getElementById('depth-object');
+            const depthStage = document.getElementById('depth-stage');
+            const depthLabel = document.getElementById('depth-label');
+            const blurLabel = document.getElementById('blur-label');
+            const opacityLabel = document.getElementById('opacity-label');
+            const rotateXLabel = document.getElementById('rotatex-label');
+            const rotateYLabel = document.getElementById('rotatey-label');
+            const codeBlock = document.getElementById('code-block');
+            const copyBtn = document.getElementById('copy-css-btn');
+
+            const layerBg = document.getElementById('layer-bg');
+            const layerFg = document.getElementById('layer-fg');
+
+            function updateDepth() {
+                const depth = parseInt(depthSlider.value) / 100;
+                const blur = parseInt(blurSlider.value);
+                const opacity = parseInt(opacitySlider.value) / 100;
+                const rotX = parseInt(rotateXSlider.value);
+                const rotY = parseInt(rotateYSlider.value);
+                const zIndex = zIndexSelect.value;
+
+                // Depth level label
+                let depthName = 'Shallow';
+                let translateZ = 20 + depth * 180;
+                if (depth < 0.25) depthName = 'Shallow';
+                else if (depth < 0.5) depthName = 'Moderate';
+                else if (depth < 0.75) depthName = 'Deep';
+                else depthName = 'Extreme';
+                depthLabel.textContent = depthName;
+
+                // Remove all depth classes
+                depthObject.classList.remove('shallow', 'moderate', 'deep', 'extreme');
+
+                // Apply 3D transform
+                const shadowX = 0;
+                const shadowY = 10 + depth * 50;
+                const spread = depth * 20;
+
+                depthObject.style.transform = `perspective(800px) translateZ(${translateZ}px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+                depthObject.style.boxShadow = `${shadowX}px ${shadowY}px ${blur}px rgba(0,0,0,${opacity}), 0 4px 12px rgba(0,0,0,${opacity * 0.6})`;
+                depthObject.style.zIndex = zIndex;
+
+                // Update stage perspective based on depth
+                depthStage.style.perspective = `${800 - depth * 200}px`;
+
+                // Update layer transforms
+                layerBg.style.transform = `translateZ(-${40 + depth * 40}px)`;
+                layerFg.style.transform = `translateZ(${40 + depth * 40}px)`;
+
+                // Update labels
+                blurLabel.textContent = `${blur}px`;
+                opacityLabel.textContent = opacity.toFixed(2);
+                rotateXLabel.textContent = `${rotX}°`;
+                rotateYLabel.textContent = `${rotY}°`;
+
+                // Update code
+                updateCode(translateZ, blur, opacity, rotX, rotY, zIndex, shadowX, shadowY, spread);
+            }
+
+            function updateCode(tz, blur, opacity, rotX, rotY, zIdx, shX, shY, spread) {
+                codeBlock.innerHTML = `<span class="cmt">/* Depth Forge Generated Properties */</span>
+
+<span class="sel">.element</span> {
+  <span class="prop">transform</span>: <span class="val">perspective(800px) translateZ(${Math.round(tz)}px) rotateX(${rotX}deg) rotateY(${rotY}deg)</span>;
+  <span class="prop">box-shadow</span>: <span class="num">${shX}px ${shY}px ${blur}px rgba(0,0,0,${opacity.toFixed(2)})</span>;
+  <span class="prop">z-index</span>: <span class="num">${zIdx}</span>;
+  <span class="prop">perspective</span>: <span class="val">800px</span>;
+  <span class="prop">transform-style</span>: <span class="val">preserve-3d</span>;
+}`;
+            }
+
+            // Event listeners
+            [depthSlider, blurSlider, opacitySlider, rotateXSlider, rotateYSlider, zIndexSelect].forEach(el => {
+                el.addEventListener('input', updateDepth);
+                el.addEventListener('change', updateDepth);
+            });
+
+            // Reset
+            resetBtn.addEventListener('click', () => {
+                depthSlider.value = 50;
+                blurSlider.value = 30;
+                opacitySlider.value = 30;
+                rotateXSlider.value = 0;
+                rotateYSlider.value = 0;
+                zIndexSelect.value = '2';
+                updateDepth();
+            });
+
+            // Copy
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    const raw = codeBlock.textContent || codeBlock.innerText;
+                    navigator.clipboard.writeText(raw).then(() => {
+                        copyBtn.textContent = '✅ Copied!';
+                        setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
+                    });
+                });
+            }
+
+            // Init
+            updateDepth();
+        });
+    </script>
+</body>
+
+</html>

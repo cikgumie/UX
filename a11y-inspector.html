@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A11y Inspector — Accessibility Audit Lab</title>
+    <meta name="description"
+        content="Audit color contrast, font sizes, focus indicators, and ARIA labels to ensure WCAG compliance.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- TailwindCSS v3 CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #080a14;
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(139, 92, 246, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139, 92, 246, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .a11y-header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .a11y-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #34d399, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .a11y-header h1 span {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .a11y-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Controls */
+        .controls-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 16px;
+        }
+
+        .control-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .control-label span {
+            color: #34d399;
+        }
+
+        .control-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            border-radius: 4px;
+            background: rgba(52, 211, 153, 0.2);
+            outline: none;
+        }
+
+        .control-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #10b981;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(52, 211, 153, 0.4);
+        }
+
+        .control-select {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.3);
+            color: #e2e8f0;
+            font-size: 0.75rem;
+            font-family: 'Fira Code', monospace;
+            outline: none;
+        }
+
+        .color-input-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .color-swatch {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .inspect-btn {
+            width: 100%;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .inspect-btn:hover {
+            box-shadow: 0 0 20px rgba(52, 211, 153, 0.3);
+        }
+
+        /* Preview */
+        .preview-area {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 24px;
+        }
+
+        .contrast-display {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .contrast-box {
+            flex: 1;
+            min-width: 120px;
+            padding: 20px;
+            border-radius: 14px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .contrast-ratio {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .contrast-ratio .ratio-value {
+            font-size: 3rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .contrast-ratio .ratio-status {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 8px;
+        }
+
+        .status-pass {
+            background: rgba(52, 211, 153, 0.15);
+            color: #34d399;
+        }
+
+        .status-fail {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .status-aa {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+        }
+
+        /* Sample text preview */
+        .sample-text-preview {
+            padding: 20px;
+            border-radius: 14px;
+            margin: 16px 0;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .sample-text-preview p {
+            margin-bottom: 8px;
+        }
+
+        .sample-text-preview .small-text {
+            font-size: 0.75rem;
+        }
+
+        .sample-text-preview .large-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        /* WCAG badge */
+        .wcag-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            font-family: 'Fira Code', monospace;
+            margin-top: 10px;
+        }
+
+        /* Focus visibility demo */
+        .focus-demo {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .focus-demo button {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .focus-demo button:focus-visible {
+            outline: 3px solid #10b981;
+            outline-offset: 3px;
+        }
+
+        /* Font size demo */
+        .font-size-demo {
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.15);
+            margin-top: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .a11y-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+
+    <!-- Navigation -->
+    <nav class="max-w-[1100px] w-full mx-auto px-6 pt-6 flex justify-between items-center relative z-10">
+        <a href="index.html"
+            class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to UI Craft Labs
+        </a>
+        <span
+            class="text-xs font-mono px-3 py-1 rounded-full bg-slate-900/60 border border-emerald-500/20 text-emerald-400">Lab
+            06: A11y Inspector</span>
+    </nav>
+
+    <!-- Header -->
+    <header class="a11y-header">
+        <p class="font-mono text-xs uppercase tracking-[4px] text-emerald-400 mb-2">WCAG Compliance Lab</p>
+        <h1>A11y <span>Inspector</span></h1>
+        <p class="text-slate-400 text-sm max-w-lg mx-auto mt-3">Audit color contrast ratios (WCAG AA/AAA), test font
+            sizes, focus indicators, and ARIA labels for inclusive design.</p>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="a11y-container">
+        <!-- LEFT: Controls -->
+        <section class="controls-panel">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono mb-4">Audit Controls</h2>
+
+            <div class="control-group">
+                <label class="control-label">Foreground Color</label>
+                <div class="color-input-row">
+                    <input type="color" id="fg-color" value="#e2e8f0" class="color-swatch" style="flex:1;">
+                    <span id="fg-hex"
+                        style="font-size:0.65rem;font-family:'Fira Code',monospace;color:#64748b;">#e2e8f0</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Background Color</label>
+                <div class="color-input-row">
+                    <input type="color" id="bg-color" value="#080a14" class="color-swatch" style="flex:1;">
+                    <span id="bg-hex"
+                        style="font-size:0.65rem;font-family:'Fira Code',monospace;color:#64748b;">#080a14</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Font Size (px) <span id="font-size-label">16px</span></label>
+                <input type="range" id="font-size-slider" class="control-slider" min="10" max="40" value="16">
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Font Weight</label>
+                <select id="font-weight-select" class="control-select">
+                    <option value="300">Light (300)</option>
+                    <option value="400" selected>Regular (400)</option>
+                    <option value="600">Semi-Bold (600)</option>
+                    <option value="700">Bold (700)</option>
+                    <option value="900">Black (900)</option>
+                </select>
+            </div>
+
+            <div class="control-group" style="margin-top:20px;">
+                <button id="check-contrast-btn" class="inspect-btn">🔍 Check Contrast</button>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">Focus Style</label>
+                <select id="focus-style-select" class="control-select">
+                    <option value="none">None (WCAG Fail)</option>
+                    <option value="outline" selected>Outline 3px</option>
+                    <option value="ring">Ring + Shadow</option>
+                    <option value="underline">Underline</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- RIGHT: Preview -->
+        <section class="preview-area">
+            <!-- Contrast Results -->
+            <div class="contrast-display">
+                <div class="contrast-box" id="fg-preview" style="background:#080a14;color:#e2e8f0;">Aa</div>
+                <div class="contrast-box" id="bg-preview" style="background:#e2e8f0;color:#080a14;">Aa</div>
+            </div>
+
+            <div class="contrast-ratio">
+                <div class="ratio-value" id="ratio-value">21.0:1</div>
+                <div style="margin-top:8px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                    <span class="wcag-badge status-pass" id="aa-large-badge">✅ AA Large (3:1)</span>
+                    <span class="wcag-badge status-pass" id="aa-badge">✅ AA Normal (4.5:1)</span>
+                    <span class="wcag-badge status-pass" id="aaa-badge">✅ AAA (7:1)</span>
+                </div>
+            </div>
+
+            <!-- Sample Text -->
+            <div class="sample-text-preview" id="sample-preview">
+                <p class="large-text" id="sample-large">The five boxing wizards jump quickly.</p>
+                <p class="small-text" id="sample-small">Small text: For WCAG AA, normal text under 18px needs a 4.5:1
+                    contrast ratio. Large text (≥18px bold or ≥24px regular) needs 3:1.</p>
+                <p id="sample-regular">Regular text used in paragraphs and content areas across the interface.</p>
+            </div>
+
+            <!-- Focus Demo -->
+            <div style="margin-top:16px;">
+                <label class="control-label" style="margin-bottom:8px;">Focus Indicator Test</label>
+                <div class="focus-demo">
+                    <button id="focus-btn-1" tabindex="0">Tab to me</button>
+                    <button id="focus-btn-2" tabindex="0">And me</button>
+                    <button id="focus-btn-3" tabindex="0">Focus here too</button>
+                </div>
+                <p style="font-size:0.65rem;color:#64748b;margin-top:8px;">Press Tab to navigate between buttons and
+                    test focus visibility.</p>
+            </div>
+
+            <!-- Font Size Demo -->
+            <div class="font-size-demo" id="font-demo">
+                <span
+                    style="font-size:0.6rem;color:#64748b;text-transform:uppercase;font-weight:700;letter-spacing:1px;">Font
+                    Size Preview</span>
+                <p id="font-demo-text" style="margin-top:6px;font-size:16px;">This text adjusts to your selected font
+                    size and weight settings above.</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fgPicker = document.getElementById('fg-color');
+            const bgPicker = document.getElementById('bg-color');
+            const fgHex = document.getElementById('fg-hex');
+            const bgHex = document.getElementById('bg-hex');
+            const fgPreview = document.getElementById('fg-preview');
+            const bgPreview = document.getElementById('bg-preview');
+            const ratioValue = document.getElementById('ratio-value');
+            const aaLargeBadge = document.getElementById('aa-large-badge');
+            const aaBadge = document.getElementById('aa-badge');
+            const aaaBadge = document.getElementById('aaa-badge');
+            const samplePreview = document.getElementById('sample-preview');
+            const sampleLarge = document.getElementById('sample-large');
+            const sampleSmall = document.getElementById('sample-small');
+            const sampleRegular = document.getElementById('sample-regular');
+            const checkBtn = document.getElementById('check-contrast-btn');
+            const fontSizeSlider = document.getElementById('font-size-slider');
+            const fontSizeLabel = document.getElementById('font-size-label');
+            const fontWeightSelect = document.getElementById('font-weight-select');
+            const fontDemoText = document.getElementById('font-demo-text');
+            const focusStyleSelect = document.getElementById('focus-style-select');
+            const focusBtns = document.querySelectorAll('.focus-demo button');
+
+            // Relative luminance calculation (WCAG)
+            function getLuminance(r, g, b) {
+                const [rs, gs, bs] = [r, g, b].map(c => {
+                    c = c / 255;
+                    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+                });
+                return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+            }
+
+            function hexToRgb(hex) {
+                const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? {
+                    r: parseInt(result[1], 16),
+                    g: parseInt(result[2], 16),
+                    b: parseInt(result[3], 16)
+                } : { r: 255, g: 255, b: 255 };
+            }
+
+            function getContrastRatio(hex1, hex2) {
+                const c1 = hexToRgb(hex1);
+                const c2 = hexToRgb(hex2);
+                const l1 = getLuminance(c1.r, c1.g, c1.b);
+                const l2 = getLuminance(c2.r, c2.g, c2.b);
+                const lighter = Math.max(l1, l2);
+                const darker = Math.min(l1, l2);
+                return (lighter + 0.05) / (darker + 0.05);
+            }
+
+            function updateContrast() {
+                const fg = fgPicker.value;
+                const bg = bgPicker.value;
+                const fontSize = parseInt(fontSizeSlider.value);
+                const fontWeight = parseInt(fontWeightSelect.value);
+
+                // Update hex labels
+                fgHex.textContent = fg;
+                bgHex.textContent = bg;
+
+                // Update preview boxes
+                fgPreview.style.background = bg;
+                fgPreview.style.color = fg;
+                fgPreview.textContent = 'Aa';
+                bgPreview.style.background = fg;
+                bgPreview.style.color = bg;
+                bgPreview.textContent = 'Aa';
+
+                // Update sample text
+                samplePreview.style.background = bg;
+                samplePreview.style.color = fg;
+                sampleLarge.style.color = fg;
+                sampleSmall.style.color = fg;
+                sampleRegular.style.color = fg;
+
+                // Calculate ratio
+                const ratio = getContrastRatio(fg, bg);
+                const ratioFormatted = ratio.toFixed(1);
+                ratioValue.textContent = `${ratioFormatted}:1`;
+
+                // WCAG thresholds
+                const isLargeText = (fontSize >= 24) || (fontSize >= 18 && fontWeight >= 700);
+                const passesAA = ratio >= 4.5;
+                const passesAALarge = ratio >= 3.0;
+                const passesAAA = ratio >= 7.0;
+
+                // AA Large badge
+                aaLargeBadge.textContent = passesAALarge ? '✅ AA Large (3:1)' : '❌ AA Large Fail';
+                aaLargeBadge.className = `wcag-badge ${passesAALarge ? 'status-pass' : 'status-fail'}`;
+
+                // AA Normal badge
+                aaBadge.textContent = passesAA ? '✅ AA Normal (4.5:1)' : '❌ AA Normal Fail';
+                aaBadge.className = `wcag-badge ${passesAA ? 'status-pass' : 'status-fail'}`;
+
+                // AAA badge
+                aaaBadge.textContent = passesAAA ? '✅ AAA (7:1)' : '❌ AAA Fail';
+                aaaBadge.className = `wcag-badge ${passesAAA ? 'status-pass' : 'status-fail'}`;
+            }
+
+            // Font size & weight preview
+            function updateFontPreview() {
+                const size = parseInt(fontSizeSlider.value);
+                const weight = parseInt(fontWeightSelect.value);
+                fontSizeLabel.textContent = `${size}px`;
+
+                sampleLarge.style.fontSize = `${Math.min(size + 8, 40)}px`;
+                sampleSmall.style.fontSize = `${Math.max(size - 4, 10)}px`;
+                sampleRegular.style.fontSize = `${size}px`;
+
+                fontDemoText.style.fontSize = `${size}px`;
+                fontDemoText.style.fontWeight = weight;
+            }
+
+            // Focus style update
+            function updateFocusStyle() {
+                const style = focusStyleSelect.value;
+                focusBtns.forEach(btn => {
+                    btn.style.outline = '';
+                    btn.style.boxShadow = '';
+                    btn.style.textDecoration = '';
+                    btn.style.outlineOffset = '';
+
+                    if (style === 'outline') {
+                        btn.style.outline = '3px solid #10b981';
+                        btn.style.outlineOffset = '3px';
+                    } else if (style === 'ring') {
+                        btn.style.boxShadow = '0 0 0 4px rgba(52,211,153,0.4)';
+                    } else if (style === 'underline') {
+                        btn.style.textDecoration = 'underline';
+                        btn.style.textDecorationColor = '#10b981';
+                        btn.style.textUnderlineOffset = '4px';
+                    }
+                });
+            }
+
+            // Event listeners
+            fgPicker.addEventListener('input', updateContrast);
+            bgPicker.addEventListener('input', updateContrast);
+            checkBtn.addEventListener('click', updateContrast);
+            fontSizeSlider.addEventListener('input', () => {
+                updateFontPreview();
+                updateContrast();
+            });
+            fontWeightSelect.addEventListener('change', () => {
+                updateFontPreview();
+                updateContrast();
+            });
+            focusStyleSelect.addEventListener('change', updateFocusStyle);
+
+            // Init
+            updateContrast();
+            updateFontPreview();
+            updateFocusStyle();
+        });
+    </script>
+</body>
+
+</html>

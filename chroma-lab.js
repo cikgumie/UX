@@ -1,4 +1,5 @@
 // ===== CHROMA LAB — COLOR PALETTE STUDIO JS =====
+// Enhanced with: Off-White Palettes (Trend #1), Accessibility contrast (Trend #10)
 
 document.addEventListener('DOMContentLoaded', () => {
   const baseColor = document.getElementById('base-color');
@@ -13,6 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const bgColor = document.getElementById('bg-color');
   const contrastRatio = document.getElementById('contrast-ratio');
   const contrastBadge = document.getElementById('contrast-badge');
+
+  // Off-White palette toggle
+  const palettePresets = document.querySelectorAll('.palette-preset');
 
   // ===== Color utilities =====
   function hexToRgb(hex) {
@@ -59,16 +63,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const hue2rgb = (p, q, t) => {
         if (t < 0) t += 1;
         if (t > 1) t -= 1;
-        if (t < 1/6) return p + (q - p) * 6 * t;
-        if (t < 1/2) return q;
-        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
         return p;
       };
       const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
       const p = 2 * l - q;
-      r = hue2rgb(p, q, h + 1/3);
+      r = hue2rgb(p, q, h + 1 / 3);
       g = hue2rgb(p, q, h);
-      b = hue2rgb(p, q, h - 1/3);
+      b = hue2rgb(p, q, h - 1 / 3);
     }
     return { r: r * 255, g: g * 255, b: b * 255 };
   }
@@ -92,6 +96,40 @@ document.addEventListener('DOMContentLoaded', () => {
   function lerp(a, b, t) {
     return a + (b - a) * t;
   }
+
+  // ===== OFF-WHITE PALETTE DEFINITIONS (Trend #1) =====
+  const OFF_WHITE_PALETTES = {
+    'off-white': {
+      name: 'Off-White Comfort',
+      colors: ['#faf8f5', '#f0ebe3', '#e8e0d6', '#d5ccc0', '#c0b5a6'],
+      bg: '#faf8f5',
+      text: '#2d2a3d'
+    },
+    'off-warm': {
+      name: 'Off-Warm Beige',
+      colors: ['#f7f3ee', '#efe8dd', '#e3d9cb', '#d4c7b4', '#c2b29b'],
+      bg: '#f7f3ee',
+      text: '#2c2418'
+    },
+    'off-cool': {
+      name: 'Off-Cool Slate',
+      colors: ['#f0f2f5', '#e2e6ed', '#d1d7e1', '#bcc5d3', '#a5b0c2'],
+      bg: '#f0f2f5',
+      text: '#1a2233'
+    },
+    'off-cream': {
+      name: 'Creamy Neutral',
+      colors: ['#fefcf5', '#faf5ea', '#f3ecdb', '#eadec6', '#ddcfb0'],
+      bg: '#fefcf5',
+      text: '#2b2520'
+    },
+    'off-sage': {
+      name: 'Sage Green',
+      colors: ['#f4f7f2', '#e6ece2', '#d4dfce', '#bfceb6', '#a7ba9b'],
+      bg: '#f4f7f2',
+      text: '#1e2a1a'
+    }
+  };
 
   // ===== Harmony generators =====
   function generatePalette(hex, harmony, count) {
@@ -171,6 +209,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         break;
       }
+      case 'off-white': {
+        // Use warm neutral palette for visual comfort
+        return [...OFF_WHITE_PALETTES['off-white'].colors.slice(0, count)];
+      }
+      case 'off-warm': {
+        return [...OFF_WHITE_PALETTES['off-warm'].colors.slice(0, count)];
+      }
+      case 'off-cool': {
+        return [...OFF_WHITE_PALETTES['off-cool'].colors.slice(0, count)];
+      }
+      case 'off-cream': {
+        return [...OFF_WHITE_PALETTES['off-cream'].colors.slice(0, count)];
+      }
+      case 'off-sage': {
+        return [...OFF_WHITE_PALETTES['off-sage'].colors.slice(0, count)];
+      }
       default: {
         for (let i = 0; i < count; i++) {
           const t = i / (count - 1);
@@ -199,6 +253,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Render swatches
     paletteGrid.innerHTML = '';
+    const isOffWhite = harmony.startsWith('off-');
+
     colors.forEach((color, i) => {
       const swatch = document.createElement('div');
       swatch.className = 'palette-swatch';
@@ -216,16 +272,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Update CSS export
-    updateCSSExport(hex, colors);
+    updateCSSExport(hex, colors, harmony);
 
     // Update BG contrast picker
     bgColor.value = colors[0] || hex;
   }
 
   // ===== Update CSS export =====
-  function updateCSSExport(baseHex, colors) {
+  function updateCSSExport(baseHex, colors, harmony) {
+    const harmonyLabel = harmonySelect.options[harmonySelect.selectedIndex].text;
     let css = `:root {\n`;
-    css += `  /* Base: ${baseHex.toUpperCase()} — ${harmonySelect.options[harmonySelect.selectedIndex].text} */\n\n`;
+    css += `  /* Base: ${baseHex.toUpperCase()} — ${harmonyLabel} */\n\n`;
     colors.forEach((color, i) => {
       const name = COLOR_NAMES[i % COLOR_NAMES.length].toLowerCase().replace(/\s+/g, '-');
       css += `  --color-${name}-${i + 1}: ${color};\n`;
@@ -234,6 +291,12 @@ document.addEventListener('DOMContentLoaded', () => {
     css += `  --color-primary: ${colors[0]};\n`;
     css += `  --color-secondary: ${colors[1] || colors[0]};\n`;
     css += `  --color-accent: ${colors[Math.min(2, colors.length - 1)]};\n`;
+
+    // Add Off-White body suggestion if applicable
+    if (harmony.startsWith('off-')) {
+      css += `\n  /* Off-White Comfort Palette */\n`;
+      css += `  body {\n    background: ${colors[0]};\n    color: ${OFF_WHITE_PALETTES[harmony]?.text || '#2d2a3d'};\n  }\n`;
+    }
     css += `}`;
 
     cssExportCode.innerHTML = css
@@ -251,19 +314,44 @@ document.addEventListener('DOMContentLoaded', () => {
     contrastRatio.textContent = `${ratio.toFixed(2)}:1`;
 
     if (ratio >= 7) {
-      contrastBadge.textContent = 'AAA ✓';
+      contrastBadge.textContent = 'AAA ✓ Excellent';
       contrastBadge.className = 'contrast-badge aaa';
     } else if (ratio >= 4.5) {
-      contrastBadge.textContent = 'AA ✓';
+      contrastBadge.textContent = 'AA ✓ Good';
       contrastBadge.className = 'contrast-badge aa';
     } else if (ratio >= 3) {
-      contrastBadge.textContent = 'AA (Large)';
+      contrastBadge.textContent = 'AA (Large Text)';
       contrastBadge.className = 'contrast-badge aa';
     } else {
-      contrastBadge.textContent = 'FAIL ✗';
+      contrastBadge.textContent = 'FAIL ✗ Needs Improvement';
       contrastBadge.className = 'contrast-badge fail';
     }
   }
+
+  // ===== Apply Off-White palette preset to body =====
+  palettePresets.forEach(preset => {
+    preset.addEventListener('click', () => {
+      const palette = preset.dataset.palette;
+
+      // Remove all palette attributes
+      document.body.removeAttribute('data-palette');
+
+      if (palette && palette !== 'default') {
+        document.body.setAttribute('data-palette', palette);
+        // Apply the palette to the harmony select
+        harmonySelect.value = palette;
+        updatePalette();
+      }
+
+      // Update active state
+      palettePresets.forEach(p => p.classList.remove('active'));
+      if (palette !== 'default') {
+        preset.classList.add('active');
+      }
+
+      showNotification(`🎨 Applied ${OFF_WHITE_PALETTES[palette]?.name || 'Default'} Palette`);
+    });
+  });
 
   // ===== Event listeners =====
   baseColor.addEventListener('input', () => {
@@ -290,7 +378,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (exportBtn) {
     exportBtn.addEventListener('click', () => {
       const rawCSS = cssExportCode.textContent || cssExportCode.innerText;
-      // Clean up HTML tags
       const cleanCSS = rawCSS.replace(/<[^>]*>/g, '');
       navigator.clipboard.writeText(cleanCSS).then(() => {
         exportBtn.textContent = '✅ Copied CSS Variables!';
@@ -308,6 +395,29 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => { copyPaletteBtn.textContent = '📋 Copy'; }, 2000);
       });
     });
+  }
+
+  // ===== Toast notification =====
+  function showNotification(msg) {
+    const existing = document.querySelector('.theme-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'theme-toast fixed bottom-6 right-6 bg-slate-900 border border-violet-500/30 text-white font-semibold text-xs px-4 py-3 rounded-xl shadow-2xl z-50 transition-all transform translate-y-10 opacity-0';
+    toast.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+    toast.textContent = msg;
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.remove('translate-y-10', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+    }, 100);
+
+    setTimeout(() => {
+      toast.classList.add('translate-y-10', 'opacity-0');
+      setTimeout(() => toast.remove(), 400);
+    }, 2500);
   }
 
   // ===== Initialize =====
