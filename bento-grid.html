@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grid Mosaic Reflow — CSS Interactive Tutorial</title>
+  <meta name="description" content="Interactive CSS tutorial demonstrating responsive dashboard grid layouts with drag-to-resize and live CSS preview.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- TailwindCSS v3 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="bento-grid.css">
+</head>
+<body>
+
+  <!-- ===== NAVIGATION BREADCRUMB ===== -->
+  <nav class="max-w-[1000px] w-full mx-auto px-6 pt-6 flex justify-between items-center relative z-10">
+    <a href="index.html" class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back to UI Craft Labs
+    </a>
+    <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-900 border border-violet-500/20 text-violet-400">
+      Lab 01: Grid Reflow
+    </span>
+  </nav>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header" id="header" style="margin-top: 10px;">
+    <p class="header__subtitle">CSS Interactive Tutorial</p>
+    <h1 class="header__title">Grid <span>Mosaic</span></h1>
+    <p class="header__desc">Drag to resize · watch the layout reflow</p>
+  </header>
+
+  <!-- ===== BREAKPOINT TABS ===== -->
+  <nav class="tabs" id="breakpoint-tabs" aria-label="Breakpoint selector">
+    <button class="tab-btn" data-bp="mobile" id="tab-mobile">Mobile</button>
+    <button class="tab-btn" data-bp="tablet" id="tab-tablet">Tablet</button>
+    <button class="tab-btn" data-bp="laptop" id="tab-laptop">Laptop</button>
+    <button class="tab-btn active" data-bp="desktop" id="tab-desktop">Desktop</button>
+  </nav>
+
+  <!-- ===== WIDTH INDICATOR ===== -->
+  <div class="width-indicator" id="width-indicator">
+    <div class="width-markers">
+      <span>480px</span>
+      <span>768px</span>
+      <span>1024px</span>
+    </div>
+    <div class="width-bar-track">
+      <div class="width-bar-fill" id="width-bar-fill"></div>
+      <div class="width-bar-markers">
+        <span class="marker-dot" style="left: 19.3%"></span>
+        <span class="marker-dot" style="left: 54%"></span>
+        <span class="marker-dot" style="left: 84.8%"></span>
+      </div>
+    </div>
+    <span class="width-display" id="width-display">1100px</span>
+  </div>
+
+  <!-- ===== RESIZABLE GRID CONTAINER ===== -->
+  <div class="resize-wrapper">
+    <div class="resize-container" id="resize-container">
+
+      <div class="bento" id="bento-grid">
+
+        <!-- STATS -->
+        <div class="bento-card card-stats" id="card-stats">
+          <span class="card-badge">Stats</span>
+          <div class="stats-bars">
+            <div class="stats-bar" style="height:40%"></div>
+            <div class="stats-bar" style="height:65%"></div>
+            <div class="stats-bar" style="height:45%"></div>
+            <div class="stats-bar" style="height:80%"></div>
+            <div class="stats-bar" style="height:55%"></div>
+            <div class="stats-bar" style="height:90%"></div>
+            <div class="stats-bar" style="height:70%"></div>
+          </div>
+          <div class="stats-lines">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+          </div>
+        </div>
+
+        <!-- ABOUT -->
+        <div class="bento-card card-about" id="card-about">
+          <span class="card-badge">About</span>
+          <div class="about-avatar"></div>
+          <div class="about-lines">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+          </div>
+        </div>
+
+        <!-- HERO -->
+        <div class="bento-card card-hero" id="card-hero">
+          <span class="card-badge">Hero</span>
+          <div class="hero-panel"></div>
+          <div class="hero-lines">
+            <div class="line"></div>
+            <div class="line"></div>
+          </div>
+        </div>
+
+        <!-- MEDIA -->
+        <div class="bento-card card-media" id="card-media">
+          <span class="card-badge">Media</span>
+          <div class="media-grid">
+            <div class="media-thumb"></div>
+            <div class="media-thumb"></div>
+            <div class="media-thumb"></div>
+            <div class="media-thumb"></div>
+          </div>
+        </div>
+
+        <!-- FEAT -->
+        <div class="bento-card card-feat" id="card-feat">
+          <span class="card-badge">Feat</span>
+          <div class="feat-pills">
+            <div class="feat-pill"></div>
+            <div class="feat-pill"></div>
+            <div class="feat-pill"></div>
+            <div class="feat-pill"></div>
+            <div class="feat-pill"></div>
+            <div class="feat-pill"></div>
+          </div>
+          <div class="feat-pills">
+            <div class="feat-pill"></div>
+            <div class="feat-pill"></div>
+          </div>
+          <div class="feat-dots">
+            <div class="feat-dot"></div>
+            <div class="feat-dot"></div>
+            <div class="feat-dot"></div>
+          </div>
+        </div>
+
+        <!-- FEED -->
+        <div class="bento-card card-feed" id="card-feed">
+          <span class="card-badge">Feed</span>
+          <div class="feed-title"></div>
+          <div class="feed-item">
+            <div class="feed-dot"></div>
+            <div class="feed-lines">
+              <div class="line" style="flex:3"></div>
+              <div class="line" style="flex:2"></div>
+            </div>
+          </div>
+          <div class="feed-item">
+            <div class="feed-dot"></div>
+            <div class="feed-lines">
+              <div class="line" style="flex:2"></div>
+              <div class="line" style="flex:3"></div>
+            </div>
+          </div>
+          <div class="feed-item">
+            <div class="feed-dot"></div>
+            <div class="feed-lines">
+              <div class="line" style="flex:4"></div>
+              <div class="line" style="flex:1"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD -->
+        <div class="bento-card card-card" id="card-card">
+          <span class="card-badge">Card</span>
+          <div class="card-image"></div>
+          <div class="card-lines">
+            <div class="line"></div>
+            <div class="line"></div>
+          </div>
+        </div>
+
+        <!-- PROMO -->
+        <div class="bento-card card-promo" id="card-promo">
+          <span class="card-badge">Promo</span>
+          <div class="promo-content">
+            <div class="promo-icon"></div>
+            <div class="promo-lines">
+              <div class="line"></div>
+              <div class="line"></div>
+              <div class="line"></div>
+            </div>
+          </div>
+          <div class="promo-bar"></div>
+        </div>
+
+        <!-- TASKS -->
+        <div class="bento-card card-tasks" id="card-tasks">
+          <span class="card-badge">Tasks</span>
+          <div class="task-item">
+            <div class="task-check done"></div>
+            <div class="task-line" style="width:75%"></div>
+          </div>
+          <div class="task-item">
+            <div class="task-check done"></div>
+            <div class="task-line" style="width:60%"></div>
+          </div>
+          <div class="task-item">
+            <div class="task-check"></div>
+            <div class="task-line" style="width:85%"></div>
+          </div>
+          <div class="task-item">
+            <div class="task-check"></div>
+            <div class="task-line" style="width:50%"></div>
+          </div>
+        </div>
+
+      </div><!-- .bento -->
+
+      <!-- Resize handle -->
+      <div class="resize-handle" id="resize-handle" title="Drag to resize"></div>
+
+    </div><!-- .resize-container -->
+  </div><!-- .resize-wrapper -->
+
+  <!-- ===== CSS CODE PREVIEW ===== -->
+  <section class="css-panel" id="css-panel">
+    <div class="css-panel-inner">
+      <div class="css-panel-header">
+        <span class="css-panel-label">CSS</span>
+        <div class="css-tabs">
+          <button class="css-tab" data-bp="mobile" id="css-tab-base">Base</button>
+          <button class="css-tab" data-bp="tablet" id="css-tab-480">≥ 480</button>
+          <button class="css-tab" data-bp="laptop" id="css-tab-768">≥ 768</button>
+          <button class="css-tab active" data-bp="desktop" id="css-tab-1024">≥ 1024</button>
+        </div>
+      </div>
+      <pre class="css-code" id="css-code"></pre>
+    </div>
+  </section>
+
+  <!-- JavaScript -->
+  <script src="bento-grid.js"></script>
+
+</body>
+</html>

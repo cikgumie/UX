@@ -1,0 +1,1357 @@
+/* ===== UI DESIGN PLAYGROUND - STYLESHEET ===== */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;700;900&family=Share+Tech+Mono&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
+
+:root {
+  --bg-color: #0b0f19;
+  --transition-speed: 0.5s;
+  --transition-bezier: cubic-bezier(0.25, 1, 0.5, 1);
+  --accent-color: #8b5cf6;
+}
+
+/* Reset and Core Layout */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  position: relative;
+  transition: background-color var(--transition-speed) var(--transition-bezier);
+}
+
+/* Decorative Background Blobs for Glass & Aurora */
+.bg-blob {
+  position: absolute;
+  width: 45vw;
+  height: 45vw;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.blob-1 {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, transparent 70%);
+  top: 10%;
+  left: 20%;
+  transform: translate(-50%, -50%);
+}
+
+.blob-2 {
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.35) 0%, transparent 70%);
+  bottom: 10%;
+  right: 15%;
+  transform: translate(50%, 50%);
+}
+
+.blob-3 {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.3) 0%, transparent 70%);
+  top: 50%;
+  left: 60%;
+}
+
+/* Header */
+.playground-header {
+  text-align: center;
+  padding: 40px 24px 20px;
+  position: relative;
+  z-index: 10;
+}
+
+.playground-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, #fff 40%, rgba(255,255,255,0.7) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Main Grid Layout */
+.playground-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 32px;
+  position: relative;
+  z-index: 10;
+  flex-grow: 1;
+}
+
+@media (max-width: 900px) {
+  .playground-container {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+/* Style Tabs Sidebar */
+.sidebar-tabs {
+  background: rgba(18, 22, 35, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 16px;
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-self: start;
+}
+
+.style-tab-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #a0aec0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s var(--transition-bezier);
+}
+
+.style-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: #fff;
+}
+
+.style-tab-btn.active {
+  background: var(--accent-color);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.badge-pill {
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 50px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  text-transform: uppercase;
+}
+
+/* Main Workspace Area */
+.playground-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.mockup-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 480px;
+  border-radius: 24px;
+  padding: 40px 20px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+}
+
+/* ==========================================================================
+   STYLE PARADIGM STYLING RULES
+   ========================================================================== */
+
+/* 1. GLASSMORPHISM */
+.style-glassmorphism .mockup-display {
+  background: linear-gradient(135deg, #150f24, #08050e);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.style-glassmorphism .mockup-card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  color: #f7fafc;
+  padding: 28px;
+  width: 100%;
+  max-width: 380px;
+  transition: all 0.5s ease;
+}
+
+.style-glassmorphism .widget-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-weight: 500;
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+.style-glassmorphism .widget-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-2px);
+}
+.style-glassmorphism .widget-btn.active {
+  background: rgba(139, 92, 246, 0.35);
+  border-color: rgba(139, 92, 246, 0.6);
+}
+
+.style-glassmorphism .climate-dial {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.08) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 24px;
+  position: relative;
+}
+
+.style-glassmorphism .dial-temp {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+.style-glassmorphism .dial-sub {
+  font-size: 0.75rem;
+  color: #cbd5e0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+.style-glassmorphism .slider-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  position: relative;
+  margin: 20px 0;
+}
+.style-glassmorphism .slider-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #8b5cf6, #ec4899);
+  border-radius: 10px;
+}
+.style-glassmorphism .slider-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+/* 2. SKEUOMORPHISM */
+.style-skeuomorphism .mockup-display {
+  background: linear-gradient(145deg, #18191c, #1f2126);
+  border: 1.5px solid #2d3037;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.8);
+}
+
+.style-skeuomorphism .mockup-card {
+  background: linear-gradient(135deg, #2b2e35 0%, #202228 100%);
+  border: 2px solid #373b43;
+  border-bottom: 3px solid #18191c;
+  border-radius: 20px;
+  box-shadow: 
+    0 15px 35px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 1px 2px rgba(0,0,0,0.3);
+  color: #d1d5db;
+  padding: 30px;
+  width: 100%;
+  max-width: 380px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gloss glare overlay */
+.style-skeuomorphism .mockup-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 50%;
+  background: linear-gradient(rgba(255,255,255,0.06), rgba(255,255,255,0.01) 80%, transparent);
+  pointer-events: none;
+}
+
+.style-skeuomorphism .widget-btn {
+  background: linear-gradient(180deg, #373b43 0%, #25282e 100%);
+  border: 1.5px solid #1a1b1f;
+  border-top: 1.5px solid #4a4f5a;
+  color: #cbd5e0;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: 0.82rem;
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+  cursor: pointer;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.5);
+  transition: all 0.15s ease;
+}
+.style-skeuomorphism .widget-btn:hover {
+  background: linear-gradient(180deg, #3e434c 0%, #2a2e35 100%);
+  color: #fff;
+}
+.style-skeuomorphism .widget-btn:active,
+.style-skeuomorphism .widget-btn.active {
+  background: linear-gradient(180deg, #1b1c20 0%, #2b2e35 100%);
+  border-top: 1.5px solid #151619;
+  box-shadow: 
+    inset 0 2px 6px rgba(0,0,0,0.7),
+    0 1px 0 rgba(255,255,255,0.05);
+  color: #38bdf8;
+  text-shadow: 0 0 4px rgba(56, 189, 248, 0.4);
+}
+
+.style-skeuomorphism .climate-dial {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #25282e 60%, #17181c 100%);
+  border: 6px solid #2e313a;
+  box-shadow: 
+    0 10px 20px rgba(0,0,0,0.5),
+    inset 0 4px 10px rgba(0,0,0,0.7),
+    0 -1px 0 rgba(255,255,255,0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 24px;
+  position: relative;
+}
+
+/* Dial tick marker simulating high end dial */
+.style-skeuomorphism .climate-dial::before {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 6px #38bdf8;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.style-skeuomorphism .dial-temp {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #38bdf8;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+  line-height: 1;
+}
+
+.style-skeuomorphism .dial-sub {
+  font-size: 0.7rem;
+  color: #8b9bb4;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-family: 'Share Tech Mono', monospace;
+  margin-top: 4px;
+}
+
+.style-skeuomorphism .slider-track {
+  height: 12px;
+  background: #191b1f;
+  border: 1px solid #282a31;
+  border-radius: 20px;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.8);
+  position: relative;
+  margin: 20px 0;
+}
+.style-skeuomorphism .slider-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1b3d54, #38bdf8);
+  border-radius: 20px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.style-skeuomorphism .slider-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #eaeaea 0%, #a2a2a2 100%);
+  border: 1.5px solid #25282e;
+  box-shadow: 
+    0 4px 6px rgba(0,0,0,0.4),
+    inset 0 1px 0 #fff;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+/* 3. CLAYMORPHISM */
+.style-claymorphism .mockup-display {
+  background: #e6ebff;
+  border: 1px solid transparent;
+}
+
+.style-claymorphism .mockup-card {
+  background: #f0f3ff;
+  border-radius: 32px;
+  box-shadow: 
+    16px 16px 32px rgba(0, 5, 40, 0.08),
+    inset -8px -8px 16px rgba(0, 5, 40, 0.04),
+    inset 8px 8px 16px #ffffff;
+  color: #4a5568;
+  padding: 32px;
+  width: 100%;
+  max-width: 380px;
+  transition: all 0.5s ease;
+}
+
+.style-claymorphism .widget-btn {
+  background: #f0f3ff;
+  border: none;
+  color: #64748b;
+  border-radius: 18px;
+  padding: 12px 18px;
+  font-weight: 700;
+  box-shadow: 
+    6px 6px 12px rgba(0, 5, 40, 0.05),
+    inset -3px -3px 6px rgba(0, 5, 40, 0.02),
+    inset 3px 3px 6px #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.style-claymorphism .widget-btn:hover {
+  transform: translateY(-2px);
+  color: #3b82f6;
+  box-shadow: 
+    8px 8px 16px rgba(0, 5, 40, 0.08),
+    inset -3px -3px 6px rgba(0, 5, 40, 0.02),
+    inset 3px 3px 6px #ffffff;
+}
+.style-claymorphism .widget-btn.active {
+  background: #3b82f6;
+  color: #fff;
+  box-shadow: 
+    6px 6px 12px rgba(59, 130, 246, 0.25),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.12),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.2);
+}
+
+.style-claymorphism .climate-dial {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: #f0f3ff;
+  box-shadow: 
+    10px 10px 20px rgba(0, 5, 40, 0.06),
+    inset -6px -6px 12px rgba(0, 5, 40, 0.04),
+    inset 6px 6px 12px #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 24px;
+}
+
+.style-claymorphism .dial-temp {
+  font-family: 'Outfit', sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  color: #3b82f6;
+  text-shadow: 1px 1px 0 rgba(255,255,255,1), 2px 2px 5px rgba(0, 0, 20, 0.05);
+  line-height: 1;
+}
+
+.style-claymorphism .dial-sub {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+.style-claymorphism .slider-track {
+  height: 16px;
+  background: #e2e8f0;
+  border-radius: 100px;
+  box-shadow: 
+    inset 3px 3px 6px rgba(0, 5, 40, 0.05),
+    inset -3px -3px 6px #ffffff;
+  position: relative;
+  margin: 20px 0;
+}
+.style-claymorphism .slider-fill {
+  height: 100%;
+  background: #3b82f6;
+  border-radius: 100px;
+  box-shadow: inset 2px 2px 4px rgba(255,255,255,0.25);
+}
+.style-claymorphism .slider-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ff7e79;
+  box-shadow: 
+    4px 4px 10px rgba(255, 126, 121, 0.3),
+    inset -3px -3px 6px rgba(0,0,0,0.1),
+    inset 3px 3px 6px rgba(255,255,255,0.4);
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.style-claymorphism .slider-thumb:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* 4. NEUMORPHISM */
+.style-neumorphism .mockup-display {
+  background: #e0e0e0;
+  border: 1px solid transparent;
+}
+
+.style-neumorphism .mockup-card {
+  background: #e0e0e0;
+  border-radius: 30px;
+  box-shadow: 
+    12px 12px 24px #bebebe,
+    -12px -12px 24px #ffffff;
+  color: #555555;
+  padding: 30px;
+  width: 100%;
+  max-width: 380px;
+  transition: all 0.5s ease;
+}
+
+.style-neumorphism .widget-btn {
+  background: #e0e0e0;
+  border: none;
+  color: #666;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-weight: 600;
+  box-shadow: 
+    4px 4px 8px #bebebe,
+    -4px -4px 8px #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.style-neumorphism .widget-btn:hover {
+  color: #111;
+}
+.style-neumorphism .widget-btn:active,
+.style-neumorphism .widget-btn.active {
+  box-shadow: 
+    inset 3px 3px 6px #bebebe,
+    inset -3px -3px 6px #ffffff;
+  color: #6366f1;
+}
+
+.style-neumorphism .climate-dial {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  box-shadow: 
+    8px 8px 16px #bebebe,
+    -8px -8px 16px #ffffff,
+    inset 3px 3px 6px #ffffff,
+    inset -3px -3px 6px #bebebe;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 24px;
+}
+
+.style-neumorphism .dial-temp {
+  font-family: 'Inter', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #6366f1;
+  line-height: 1;
+}
+
+.style-neumorphism .dial-sub {
+  font-size: 0.75rem;
+  color: #888;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+.style-neumorphism .slider-track {
+  height: 10px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 
+    inset 2px 2px 4px #bebebe,
+    inset -2px -2px 4px #ffffff;
+  position: relative;
+  margin: 20px 0;
+}
+.style-neumorphism .slider-fill {
+  height: 100%;
+  background: #6366f1;
+  border-radius: 10px;
+}
+.style-neumorphism .slider-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  box-shadow: 
+    3px 3px 6px #bebebe,
+    -3px -3px 6px #ffffff;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+/* 5. FLAT DESIGN */
+.style-flat .mockup-display {
+  background: #1a202c;
+  border: 1px solid transparent;
+}
+
+.style-flat .mockup-card {
+  background: #2d3748;
+  border: 2px solid #4a5568;
+  border-radius: 0px; /* Zero rounded corners representing flat style */
+  box-shadow: none; /* Absolutely no shadows */
+  color: #edf2f7;
+  padding: 24px;
+  width: 100%;
+  max-width: 380px;
+  transition: all 0.5s ease;
+}
+
+.style-flat .widget-btn {
+  background: #4a5568;
+  border: none;
+  color: #edf2f7;
+  border-radius: 0px;
+  padding: 10px 16px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.style-flat .widget-btn:hover {
+  background: #718096;
+}
+.style-flat .widget-btn.active {
+  background: #319795;
+}
+
+.style-flat .climate-dial {
+  width: 130px;
+  height: 130px;
+  border-radius: 0px;
+  background: #1a202c;
+  border: 2px solid #4a5568;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 24px;
+}
+
+.style-flat .dial-temp {
+  font-family: 'Inter', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 400;
+  color: #319795;
+  line-height: 1;
+}
+
+.style-flat .dial-sub {
+  font-size: 0.72rem;
+  color: #a0aec0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+.style-flat .slider-track {
+  height: 4px;
+  background: #4a5568;
+  position: relative;
+  margin: 20px 0;
+}
+.style-flat .slider-fill {
+  height: 100%;
+  background: #319795;
+}
+.style-flat .slider-thumb {
+  width: 14px;
+  height: 14px;
+  background: #edf2f7;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+/* 6. MATERIAL DESIGN */
+.style-material .mockup-display {
+  background: #eceff1;
+  border: 1px solid transparent;
+}
+
+.style-material .mockup-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 
+    0 11px 15px -7px rgba(0,0,0,0.2), 
+    0 24px 38px 3px rgba(0,0,0,0.14), 
+    0 9px 46px 8px rgba(0,0,0,0.12); /* MD elevation-24 */
+  color: #37474f;
+  padding: 24px;
+  width: 100%;
+  max-width: 380px;
+  transition: all 0.5s ease;
+  font-family: 'Roboto', 'Inter', sans-serif;
+}
+
+.style-material .widget-btn {
+  background: #eceff1;
+  border: none;
+  color: #37474f;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 2px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: box-shadow 0.2s, background-color 0.2s;
+}
+.style-material .widget-btn:hover {
+  background: #cfd8dc;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.2);
+}
+.style-material .widget-btn.active {
+  background: #6200ee;
+  color: #fff;
+  box-shadow: 0 4px 6px rgba(98, 0, 238, 0.3);
+}
+
+.style-material .climate-dial {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: #fafafa;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 24px;
+}
+
+.style-material .dial-temp {
+  font-size: 2.8rem;
+  font-weight: 300; /* MD light weight text */
+  color: #6200ee;
+  line-height: 1;
+}
+
+.style-material .dial-sub {
+  font-size: 0.72rem;
+  color: #78909c;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+.style-material .slider-track {
+  height: 4px;
+  background: rgba(98, 0, 238, 0.2);
+  border-radius: 2px;
+  position: relative;
+  margin: 20px 0;
+}
+.style-material .slider-fill {
+  height: 100%;
+  background: #6200ee;
+  border-radius: 2px;
+}
+.style-material .slider-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #6200ee;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.style-material .slider-thumb:hover {
+  transform: translate(-50%, -50%) scale(1.4);
+}
+
+/* 7. NEO-BRUTALISM */
+.style-neo-brutalism .mockup-display {
+  background: #f1f5f9;
+  border: 1px solid #000;
+}
+
+.style-neo-brutalism .mockup-card {
+  background: #fff;
+  border: 4px solid #000000;
+  border-radius: 0px;
+  box-shadow: 8px 8px 0px 0px #000000;
+  color: #000000;
+  padding: 24px;
+  width: 100%;
+  max-width: 380px;
+  font-family: 'Outfit', sans-serif;
+  transition: transform 0.2s;
+}
+
+.style-neo-brutalism .widget-btn {
+  background: #a5f3fc;
+  border: 2.5px solid #000000;
+  color: #000000;
+  border-radius: 0px;
+  padding: 10px 16px;
+  font-weight: 900;
+  font-size: 0.85rem;
+  box-shadow: 3px 3px 0px #000;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.style-neo-brutalism .widget-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000;
+}
+.style-neo-brutalism .widget-btn:active,
+.style-neo-brutalism .widget-btn.active {
+  background: #f472b6;
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000;
+}
+
+.style-neo-brutalism .climate-dial {
+  width: 130px;
+  height: 130px;
+  border-radius: 0px;
+  background: #ffe45c;
+  border: 3.5px solid #000000;
+  box-shadow: 5px 5px 0px #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 24px;
+}
+
+.style-neo-brutalism .dial-temp {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: #000;
+  line-height: 1;
+}
+
+.style-neo-brutalism .dial-sub {
+  font-size: 0.72rem;
+  color: #000;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+.style-neo-brutalism .slider-track {
+  height: 10px;
+  background: #fff;
+  border: 3.5px solid #000000;
+  position: relative;
+  margin: 20px 0;
+}
+.style-neo-brutalism .slider-fill {
+  height: 100%;
+  background: #f472b6;
+}
+.style-neo-brutalism .slider-thumb {
+  width: 22px;
+  height: 22px;
+  background: #fff;
+  border: 3.5px solid #000000;
+  box-shadow: 2px 2px 0px #000;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+/* 8. AURORA UI */
+.style-aurora-ui .mockup-display {
+  background: #030008;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.style-aurora-ui .mockup-card {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  box-shadow: 
+    0 30px 60px rgba(0,0,0,0.8),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+  color: #e2e8f0;
+  padding: 28px;
+  width: 100%;
+  max-width: 380px;
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  transition: all 0.5s ease;
+}
+
+.style-aurora-ui .widget-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #a0aec0;
+  border-radius: 50px;
+  padding: 10px 18px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.style-aurora-ui .widget-btn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+.style-aurora-ui .widget-btn.active {
+  background: rgba(255, 255, 255, 0.95);
+  color: #030008;
+  box-shadow: 0 4px 20px rgba(255,255,255,0.15);
+}
+
+.style-aurora-ui .climate-dial {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px dashed rgba(255,255,255,0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 24px;
+}
+
+.style-aurora-ui .dial-temp {
+  font-family: 'Outfit', sans-serif;
+  font-size: 3.2rem;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1;
+}
+
+.style-aurora-ui .dial-sub {
+  font-size: 0.72rem;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 4px;
+}
+
+.style-aurora-ui .slider-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  position: relative;
+  margin: 20px 0;
+}
+.style-aurora-ui .slider-fill {
+  height: 100%;
+  background: #fff;
+  border-radius: 10px;
+}
+.style-aurora-ui .slider-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 15px #fff;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+/* 9. CYBERPUNK HUD */
+.style-cyberpunk .mockup-display {
+  background: #03030c;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+}
+
+.style-cyberpunk .mockup-card {
+  background: #070716;
+  border: 2px solid #00f0ff;
+  border-radius: 0px;
+  box-shadow: 
+    0 0 20px rgba(0, 240, 255, 0.15),
+    inset 0 0 20px rgba(255, 0, 127, 0.15);
+  color: #00f0ff;
+  padding: 28px;
+  width: 100%;
+  max-width: 380px;
+  font-family: 'Share Tech Mono', monospace;
+  position: relative;
+}
+
+/* Simulated scanner lines */
+.style-cyberpunk .mockup-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.style-cyberpunk .widget-btn {
+  background: #070716;
+  border: 1.5px solid #ff007f;
+  color: #ff007f;
+  border-radius: 0px;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-family: 'Share Tech Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 0 8px rgba(255, 0, 127, 0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.style-cyberpunk .widget-btn:hover {
+  background: rgba(255, 0, 127, 0.1);
+  box-shadow: 0 0 12px rgba(255, 0, 127, 0.4);
+  text-shadow: 0 0 4px #ff007f;
+}
+.style-cyberpunk .widget-btn.active {
+  background: #ff007f;
+  color: #070716;
+  border-color: #ff007f;
+  box-shadow: 0 0 15px #ff007f;
+}
+
+.style-cyberpunk .climate-dial {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: rgba(0, 240, 255, 0.02);
+  border: 2px solid #00f0ff;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 24px;
+  position: relative;
+}
+
+.style-cyberpunk .climate-dial::after {
+  content: 'HUD v1.02';
+  position: absolute;
+  bottom: 12px;
+  font-size: 0.55rem;
+  color: #ff007f;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
+
+.style-cyberpunk .dial-temp {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #00f0ff;
+  text-shadow: 0 0 10px #00f0ff;
+  line-height: 1;
+}
+
+.style-cyberpunk .dial-sub {
+  font-size: 0.65rem;
+  color: #ff007f;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 5px #ff007f;
+  margin-top: 4px;
+}
+
+.style-cyberpunk .slider-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  position: relative;
+  margin: 20px 0;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+}
+.style-cyberpunk .slider-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff007f, #00f0ff);
+}
+.style-cyberpunk .slider-thumb {
+  width: 16px;
+  height: 16px;
+  background: #00f0ff;
+  border: 2px solid #ff007f;
+  box-shadow: 0 0 10px #00f0ff;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+/* 10. BAUHAUS MINIMAL */
+.style-bauhaus .mockup-display {
+  background: #eaeaea;
+  border: 3px solid #000000;
+}
+
+.style-bauhaus .mockup-card {
+  background: #ffffff;
+  border: 3px solid #000000;
+  border-radius: 0px;
+  box-shadow: none;
+  color: #000000;
+  padding: 30px;
+  width: 100%;
+  max-width: 380px;
+  font-family: 'Outfit', 'Helvetica Neue', sans-serif;
+  transition: all 0.5s ease;
+}
+
+.style-bauhaus .mockup-card-title {
+  border-bottom: 3px solid #000000;
+  padding-bottom: 8px;
+  font-weight: 900;
+}
+
+.style-bauhaus .widget-btn {
+  background: #ffffff;
+  border: 3px solid #000000;
+  color: #000000;
+  border-radius: 0px;
+  padding: 10px 16px;
+  font-weight: 900;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: none;
+}
+.style-bauhaus .widget-btn:hover {
+  background: #f0be00; /* Yellow */
+}
+.style-bauhaus .widget-btn.active {
+  background: #d01118; /* Red */
+  color: #ffffff;
+}
+
+.style-bauhaus .climate-dial {
+  width: 140px;
+  height: 140px;
+  border-radius: 0px;
+  background: #ffffff;
+  border: 3px solid #000000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 24px;
+}
+
+.style-bauhaus .dial-temp {
+  font-family: 'Outfit', sans-serif;
+  font-size: 3.2rem;
+  font-weight: 900;
+  color: #002fa7; /* Bauhaus Blue */
+  line-height: 1;
+}
+
+.style-bauhaus .dial-sub {
+  font-size: 0.7rem;
+  color: #000000;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+.style-bauhaus .slider-track {
+  height: 8px;
+  background: #ffffff;
+  border: 3px solid #000000;
+  position: relative;
+  margin: 20px 0;
+}
+.style-bauhaus .slider-fill {
+  height: 100%;
+  background: #002fa7; /* Blue */
+}
+.style-bauhaus .slider-thumb {
+  width: 20px;
+  height: 20px;
+  background: #d01118; /* Red */
+  border: 3.5px solid #000000;
+  border-radius: 0px; /* Square */
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+.style-bauhaus .widget-info-row {
+  border-top: 3px solid #000000;
+  padding-top: 12px;
+  font-weight: 900;
+}
+
+.style-bauhaus .info-val {
+  color: #002fa7;
+}
+
+/* ==========================================================================
+   WIDGET INNER STRUCTURE COMMON LAYOUT (NON-CONFLICTING GLOBAL UTILS)
+   ========================================================================== */
+.mockup-card-title {
+  font-family: inherit;
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 24px;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+}
+
+.widget-modes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.widget-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  margin-top: 18px;
+}
+
+.info-label {
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.info-val {
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   CSS CODE INSPECTOR STYLING (DARK FUTURISTIC HIGH-END PREVIEW)
+   ========================================================================== */
+.css-inspector {
+  background: rgba(18, 22, 35, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.inspector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 12px;
+}
+
+.inspector-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inspector-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  box-shadow: 0 0 8px var(--accent-color);
+}
+
+.inspector-style-name {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--accent-color);
+  letter-spacing: 1px;
+}
+
+.inspector-pre {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  overflow-x: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #e2e8f0;
+}
+
+/* Syntax Highlighting */
+.prop { color: #f472b6; }     /* CSS Property keys */
+.val { color: #38bdf8; }      /* CSS values */
+.cmt { color: #64748b; }      /* comments */
+.sel { color: #fbbf24; }      /* CSS selectors */
+
+/* Dynamic Toast Notification (from main page) */
+.theme-toast {
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideIn {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}

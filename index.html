@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UI Interactive Sandbox Hub</title>
+  <meta name="description" content="Central Hub for premium interactive CSS and JS layout experiments.">
+
+  <!-- TailwindCSS v3 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom Stylesheets -->
+  <link rel="stylesheet" href="style.css">
+  
+  <style>
+    /* Card mouse move highlight glow */
+    .lab-card::after {
+      background: radial-gradient(
+        600px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
+        rgba(255, 255, 255, 0.035),
+        transparent 40%
+      );
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Decorative Glowing Meshes -->
+  <div class="radial-glow"></div>
+  <div class="radial-glow-secondary"></div>
+
+  <!-- ===== CENTRAL PORTAL HEADER ===== -->
+  <header class="app-header">
+    <p class="text-xs uppercase font-extrabold tracking-[6px] mb-3 text-violet-400 font-mono">Interactive Laboratory</p>
+    <h1 class="glow-title" data-text="UI Craft Labs">UI Craft Labs</h1>
+    <p class="text-sm md:text-base text-[var(--text-muted)] max-w-lg mx-auto mt-4 font-medium leading-relaxed">
+      A collection of high-fidelity, responsive layouts and custom styling sandboxes designed to push the boundaries of modern CSS.
+    </p>
+  </header>
+
+  <!-- ===== METRICS STATS HUB ===== -->
+  <section class="metrics-panel" aria-label="Learning Metrics">
+    <div class="metric-card">
+      <div class="metric-value" data-target="9">0</div>
+      <div class="metric-label">Modular Panels</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value" data-target="10">0</div>
+      <div class="metric-label">Design Languages</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value" data-target="6">0</div>
+      <div class="metric-label">Responsive Breakpoints</div>
+    </div>
+  </section>
+
+  <!-- ===== MAIN DIRECTORY GRID ===== -->
+  <main class="labs-grid">
+
+    <!-- LAB 1: MOSAIC DYNAMIC LAYOUT -->
+    <article class="lab-card active-link" onclick="window.location.href='bento-grid.html'" id="lab-bento">
+      <div>
+        <div class="lab-status">
+          <span class="badge badge-active">Active Lab</span>
+          <div class="lab-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" />
+            </svg>
+          </div>
+        </div>
+        <h2 class="lab-title">Grid Mosaic Reflow</h2>
+        <p class="lab-desc">
+          Test interactive responsive reflow layouts using Grid Areas. Resize live to view clean column switches from Mobile up to Desktop.
+        </p>
+        
+        <!-- Live Micro Bento interactive simulation on card -->
+        <div class="mini-bento-preview" aria-hidden="true">
+          <div class="mini-item"></div>
+          <div class="mini-item"></div>
+          <div class="mini-item"></div>
+          <div class="mini-item"></div>
+          <div class="mini-item"></div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <span class="footer-action">
+          Open Mosaic Sandbox 
+          <span class="footer-arrow font-bold">&rarr;</span>
+        </span>
+      </div>
+    </article>
+
+    <!-- LAB 2: UI DESIGN PLAYGROUND -->
+    <article class="lab-card active-link" onclick="window.location.href='theme-playground.html'" id="lab-theme">
+      <div>
+        <div class="lab-status">
+          <span class="badge badge-active">Active Lab</span>
+          <div class="lab-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-3.83" />
+            </svg>
+          </div>
+        </div>
+        <h2 class="lab-title">Design Styles Sandbox</h2>
+        <p class="lab-desc">
+          Compare 8 different design languages: Glassmorphism, Neumorphism, Claymorphism, Brutalism, Material and more in an interactive widget.
+        </p>
+
+        <!-- Live customizer inside card preview -->
+        <div class="mini-theme-preview" aria-label="Theme selector toggle dots">
+          <button class="preview-dot active bg-sky-400" aria-label="Glassmorphism Preview" title="Glassmorphism"></button>
+          <button class="preview-dot bg-amber-500" aria-label="Skeuomorphism Preview" title="Skeuomorphism"></button>
+          <button class="preview-dot bg-emerald-500" aria-label="Claymorphism Preview" title="Claymorphism"></button>
+          <button class="preview-dot bg-indigo-500" aria-label="Neumorphism Preview" title="Neumorphism"></button>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <span class="footer-action">
+          Open Styles Sandbox 
+          <span class="footer-arrow font-bold">&rarr;</span>
+        </span>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Central JS logic -->
+  <script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UI Design Languages Playground</title>
+  <meta name="description" content="Explore and inspect 8 different design languages: Glassmorphism, Skeuomorphism, Claymorphism, Neumorphism, Flat Design, Material, Neo-Brutalism, and Aurora UI in an interactive UI sandbox.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- TailwindCSS v3 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom CSS Stylesheet -->
+  <link rel="stylesheet" href="theme-playground.css">
+</head>
+<body>
+
+  <!-- Glowing Mesh Background Blobs (Active on Glass/Aurora styles) -->
+  <div class="bg-blob blob-1" id="blob-1"></div>
+  <div class="bg-blob blob-2" id="blob-2"></div>
+  <div class="bg-blob blob-3" id="blob-3"></div>
+
+  <!-- ===== BREADCRUMB / HUB NAVIGATION ===== -->
+  <nav class="max-w-[1200px] w-full mx-auto px-6 pt-6 flex justify-between items-center relative z-10">
+    <a href="index.html" class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back to UI Craft Labs
+    </a>
+    <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-900/60 border border-violet-500/20 text-violet-400">
+      Lab 02: Styles Customizer
+    </span>
+  </nav>
+
+  <!-- ===== PLAYGROUND HEADER ===== -->
+  <header class="playground-header">
+    <p class="text-xs uppercase font-extrabold tracking-[4px] mb-2 text-violet-400 font-mono">CSS Sandbox Sandbox</p>
+    <h1 class="playground-title">UI Design Playground</h1>
+    <p class="text-sm text-slate-400 max-w-lg mx-auto mt-3 font-medium">
+      Click design paradigms in the sidebar to transform the climate controller widget and inspect the CSS variables defining each style.
+    </p>
+  </header>
+
+  <!-- ===== MAIN PLAYGROUND WORKSPACE ===== -->
+  <main class="playground-container style-glassmorphism" id="playground-container">
+
+    <!-- LEFT SIDEBAR: 8 DESIGN PARADIGMS -->
+    <nav class="sidebar-tabs" aria-label="Design Style Selector">
+      <h2 class="text-xs font-extrabold tracking-widest text-slate-500 uppercase px-3 mb-2 font-mono">Design Styles</h2>
+      
+      <button class="style-tab-btn active" data-style="glassmorphism">
+        Glassmorphism <span class="badge-pill bg-sky-500/10 text-sky-400">Glass</span>
+      </button>
+      
+      <button class="style-tab-btn" data-style="skeuomorphism">
+        Skeuomorphism <span class="badge-pill bg-amber-500/10 text-amber-400">3D Real</span>
+      </button>
+      
+      <button class="style-tab-btn" data-style="claymorphism">
+        Claymorphism <span class="badge-pill bg-emerald-500/10 text-emerald-400">Soft</span>
+      </button>
+      
+      <button class="style-tab-btn" data-style="neumorphism">
+        Neumorphism <span class="badge-pill bg-indigo-500/10 text-indigo-400">Soft 3D</span>
+      </button>
+      
+      <button class="style-tab-btn" data-style="flat">
+        Flat Design <span class="badge-pill bg-rose-500/10 text-rose-400">2D Flat</span>
+      </button>
+      
+      <button class="style-tab-btn" data-style="material">
+        Material Design <span class="badge-pill bg-cyan-500/10 text-cyan-400">Layers</span>
+      </button>
+      
+      <button class="style-tab-btn" data-style="neo-brutalism">
+        Neo-Brutalism <span class="badge-pill bg-purple-500/10 text-purple-400">Loud</span>
+      </button>
+      
+      <button class="style-tab-btn" data-style="aurora-ui">
+        Aurora UI <span class="badge-pill bg-pink-500/10 text-pink-400">Mesh</span>
+      </button>
+      
+      <button class="style-tab-btn" data-style="cyberpunk">
+        Cyberpunk HUD <span class="badge-pill bg-rose-500/10 text-rose-400">Neon</span>
+      </button>
+      
+      <button class="style-tab-btn" data-style="bauhaus">
+        Bauhaus Minimal <span class="badge-pill bg-yellow-500/10 text-yellow-400">Stark</span>
+      </button>
+    </nav>
+
+    <!-- RIGHT MAIN WORKSPACE -->
+    <div class="playground-workspace">
+
+      <!-- THE THEME WIDGET DISPLAY BOX -->
+      <section class="mockup-display" id="mockup-display" aria-label="Widget Preview Sandbox">
+        
+        <!-- Smart thermostat dashboard mockup card -->
+        <div class="mockup-card" id="mockup-card">
+          
+          <h3 class="mockup-card-title">Climate Controller</h3>
+
+          <!-- Circular Temp Dial -->
+          <div class="climate-dial" id="climate-dial">
+            <span class="dial-temp" id="temp-val">22°C</span>
+            <span class="dial-sub">Target Temp</span>
+          </div>
+
+          <!-- Mode Selectors -->
+          <div class="widget-modes">
+            <button class="widget-btn active" data-mode="comfort">Comfort</button>
+            <button class="widget-btn" data-mode="eco">Eco</button>
+            <button class="widget-btn" data-mode="boost">Boost</button>
+          </div>
+
+          <!-- Temperature Slider Control -->
+          <div class="slider-track" id="slider-track" aria-label="Temperature slider">
+            <div class="slider-fill" id="slider-fill" style="width: 42.8%;"></div>
+            <div class="slider-thumb" id="slider-thumb" style="left: 42.8%;"></div>
+          </div>
+
+          <!-- Additional info metrics rows inside widget -->
+          <div class="widget-info-row">
+            <span class="info-label">Status</span>
+            <span class="info-val text-emerald-400" id="info-status">Comfort Active</span>
+          </div>
+          <div class="widget-info-row">
+            <span class="info-label">Ambient humidity</span>
+            <span class="info-val" id="info-humidity">62%</span>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- THE DYNAMIC CODE INSPECTOR PANEL -->
+      <section class="css-inspector" aria-label="CSS Inspector Code Block">
+        <div class="inspector-header">
+          <div class="inspector-title">
+            <div class="inspector-dot"></div>
+            <span>CSS Inspector</span>
+          </div>
+          <div class="inspector-style-name" id="style-name">Glassmorphism</div>
+        </div>
+        <pre class="inspector-pre"><code id="css-code-block"></code></pre>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Playground JS logic -->
+  <script src="theme-playground.js"></script>
+
+</body>
+</html>
