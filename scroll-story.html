@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scroll Story — Scroll-Driven Timeline Architect</title>
+  <meta name="description" content="Build visual scroll-driven animations, parallax effects, 3D card tilts, and generate clean CSS and high-performance JS codes.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- TailwindCSS v3 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="scroll-story.css">
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <!-- Breadcrumb Navigation -->
+  <nav class="max-w-[1400px] w-full mx-auto px-6 pt-6 flex justify-between items-center relative z-10">
+    <a href="index.html" class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back to UI Craft Labs
+    </a>
+    <div class="flex items-center gap-3">
+      <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-900/60 border border-cyan-500/20 text-cyan-400">Lab 15: Scroll Story</span>
+      <img src="cikgumie.jpg" alt="CikguMie" class="w-8 h-8 rounded-full border border-violet-500/40 shadow-[0_0_10px_rgba(139,92,246,0.3)] object-cover" onerror="this.style.display='none'">
+    </div>
+  </nav>
+
+  <!-- Header Section -->
+  <header class="ss-header">
+    <p class="font-mono text-xs uppercase tracking-[4px] text-cyan-400 mb-2">Scroll-Driven Animation Studio</p>
+    <h1 class="ss-title">Scroll <span>Story</span></h1>
+    <p class="text-slate-400 text-sm max-w-lg mx-auto mt-3">Architect modern parallax timelines and progressive scroll elements. Customize speeds, triggers, and export standard CSS Scroll-Driven rules or JS fallbacks.</p>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="ss-container">
+
+    <!-- LEFT COLUMN: Controls & Settings -->
+    <section class="ss-controls">
+      <div class="panel-header">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 font-mono">Animation Architect</h2>
+      </div>
+
+      <!-- Scroll Track Config -->
+      <div class="control-section">
+        <h3 class="section-title">🌀 Scroll Foundation</h3>
+        <div class="control-group">
+          <label class="control-label">Scroll-Track Height <span id="height-label">300vh</span></label>
+          <select id="viewport-height-select" class="control-select">
+            <option value="200">200vh (Compact Track)</option>
+            <option value="300" selected>300vh (Standard Scroll)</option>
+            <option value="400">400vh (Deep Timeline)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Parallax Layers Studio -->
+      <div class="control-section">
+        <h3 class="section-title">📐 Parallax Depth</h3>
+        <div class="control-group">
+          <div class="flex justify-between items-center mb-1">
+            <label class="control-label">Background Speed</label>
+            <span class="value-readout" id="bg-speed-label">-0.3x</span>
+          </div>
+          <input type="range" id="bg-speed-slider" class="control-slider" min="-1" max="0" value="-0.3" step="0.1">
+        </div>
+        <div class="control-group">
+          <div class="flex justify-between items-center mb-1">
+            <label class="control-label">Midground Speed</label>
+            <span class="value-readout" id="mid-speed-label">0.6x</span>
+          </div>
+          <input type="range" id="mid-speed-slider" class="control-slider" min="0" max="1" value="0.6" step="0.1">
+        </div>
+        <div class="control-group">
+          <div class="flex justify-between items-center mb-1">
+            <label class="control-label">Foreground Speed</label>
+            <span class="value-readout" id="fore-speed-label">1.2x</span>
+          </div>
+          <input type="range" id="fore-speed-slider" class="control-slider" min="1" max="2.5" value="1.2" step="0.1">
+        </div>
+      </div>
+
+      <!-- Scroll reveals -->
+      <div class="control-section">
+        <h3 class="section-title">🎭 Scroll Reveal Zones</h3>
+        <div class="control-group">
+          <label class="control-label">Card Reveal Starts At</label>
+          <select id="reveal-trigger-select" class="control-select">
+            <option value="20">20% Scroll Depth</option>
+            <option value="35" selected>35% Scroll Depth</option>
+            <option value="50">50% Scroll Depth</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Reveal Action Style</label>
+          <select id="reveal-style-select" class="control-select">
+            <option value="fade-up" selected>Fade & Slide Up</option>
+            <option value="scale-in">Scale & Fade In</option>
+            <option value="flip-3d">Isometric Flip-3D</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 3D Perspective Space -->
+      <div class="control-section">
+        <h3 class="section-title">🔮 3D Rotation Axis</h3>
+        <div class="control-group">
+          <div class="flex justify-between items-center mb-1">
+            <label class="control-label">Max Pitch (X-Axis)</label>
+            <span class="value-readout" id="pitch-label">45deg</span>
+          </div>
+          <input type="range" id="pitch-slider" class="control-slider" min="-90" max="90" value="45" step="5">
+        </div>
+        <div class="control-group">
+          <div class="flex justify-between items-center mb-1">
+            <label class="control-label">Max Yaw (Y-Axis)</label>
+            <span class="value-readout" id="yaw-label">-30deg</span>
+          </div>
+          <input type="range" id="yaw-slider" class="control-slider" min="-90" max="90" value="-30" step="5">
+        </div>
+      </div>
+
+    </section>
+
+    <!-- MIDDLE COLUMN: Visual Scroll Viewport Simulator -->
+    <section class="ss-preview">
+      <div class="preview-header">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-red-500"></span>
+          <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+          <span class="w-3 h-3 rounded-full bg-green-500"></span>
+        </div>
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono">Viewport Simulator</span>
+        <div class="flex items-center gap-3">
+          <button id="view-mode-btn" class="view-toggle" title="Toggle Frame Aspect Size">📱 Mobile View</button>
+        </div>
+      </div>
+
+      <!-- Simulator Device Chassis -->
+      <div class="device-chassis" id="device-chassis">
+        <!-- Top Neon Scroll Bar -->
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progress-bar-fill"></div>
+        </div>
+
+        <!-- Float Coordinates -->
+        <div class="scroll-telemetry">
+          <span>SCROLL Y: <strong id="telemetry-px">0px</strong></span>
+          <span>DEPTH: <strong id="telemetry-percent">0%</strong></span>
+        </div>
+
+        <!-- Scrollable Inner Viewport -->
+        <div class="viewport-track" id="viewport-track">
+          <!-- Scrollable Canvas Heights (dynamically updated) -->
+          <div class="scroll-track-content" id="scroll-track-content">
+            
+            <!-- Rulers & Active Marker Lines overlay -->
+            <div class="ruler-overlays">
+              <div class="ruler-line trigger-start" style="top: 35%">
+                <span>Trigger Start (<span class="trigger-val">35%</span>)</span>
+              </div>
+              <div class="ruler-line trigger-end" style="top: 85%">
+                <span>Animation Settled (85%)</span>
+              </div>
+            </div>
+
+            <!-- PARALLAX HERO STAGE -->
+            <div class="scene-stage">
+              <!-- Layer 1: Stars (Parallax Background) -->
+              <div class="scene-layer layer-bg" id="layer-bg">
+                <div class="stars-pattern"></div>
+                <div class="glowing-nebula"></div>
+              </div>
+
+              <!-- Layer 2: Cyber City silhouettes (Parallax Midground) -->
+              <div class="scene-layer layer-mid" id="layer-mid">
+                <div class="city-skyline"></div>
+                <div class="floating-grid"></div>
+              </div>
+
+              <!-- Layer 3: Neon grid overlays (Parallax Foreground) -->
+              <div class="scene-layer layer-fore" id="layer-fore">
+                <div class="glowing-beam"></div>
+                <div class="floating-particles"></div>
+              </div>
+
+              <!-- Floating Title inside Stage -->
+              <div class="hero-title-stage" id="stage-title">
+                <h2>NEON SKYLINE</h2>
+                <p>Scroll down to reveal the future grid</p>
+              </div>
+            </div>
+
+            <!-- INTERACTIVE REVEAL & 3D STAGE SECTION -->
+            <div class="interactive-stage-section">
+              <!-- Animated 3D Isometric Card -->
+              <div class="perspective-card-wrapper" id="card-wrapper">
+                <div class="isometric-card" id="isometric-card">
+                  <div class="card-glow"></div>
+                  <div class="card-inner">
+                    <div class="card-badge">TIMELINE ENGINE</div>
+                    <h3>Core Reactor</h3>
+                    <p>Calculates spatial matrices on standard browser ticks using performant keyframe timelines.</p>
+                    <div class="reactor-pulse"></div>
+                    <div class="flex justify-between items-center mt-6">
+                      <span class="text-[10px] font-mono text-cyan-400">PITCH & YAW DEGREES</span>
+                      <span class="text-xs font-mono font-bold text-white" id="live-angle-label">0° / 0°</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Text Splitting Letter-by-Letter Scroll Reveal -->
+              <div class="typography-scroll-stage">
+                <p class="scroll-words" id="scroll-words">
+                  <span>S</span><span>p</span><span>a</span><span>t</span><span>i</span><span>a</span><span>l</span>
+                  <span></span>
+                  <span>a</span><span>n</span><span>i</span><span>m</span><span>a</span><span>t</span><span>i</span><span>o</span><span>n</span>
+                  <span></span>
+                  <span>d</span><span>r</span><span>i</span><span>v</span><span>e</span><span>n</span>
+                  <span></span>
+                  <span>b</span><span>y</span>
+                  <span></span>
+                  <span>s</span><span>c</span><span>r</span><span>o</span><span>l</span><span>l</span>
+                  <span></span>
+                  <span>p</span><span>h</span><span>y</span><span>s</span><span>i</span><span>c</span><span>s</span>
+                </p>
+              </div>
+            </div>
+
+            <!-- Endpoint Anchor Visualizer -->
+            <div class="endpoint-terminal font-mono">
+              <div class="terminal-badge">TIMELINE ENDPOINT</div>
+              <p>You have successfully scrolled to the bottom of the timeline footprint.</p>
+              <button class="reset-scroll-btn" onclick="document.getElementById('viewport-track').scrollTo({top: 0, behavior: 'smooth'})">
+                ↩️ Reset Timeline
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT COLUMN: Code Exporters & Specs -->
+    <section class="ss-code">
+      <div class="code-export-tabs">
+        <button class="code-tab active" data-format="css">CSS Standard</button>
+        <button class="code-tab" data-format="js">JS Fallback</button>
+      </div>
+
+      <div class="code-header">
+        <span id="format-label">CSS Scroll-Driven Spec</span>
+        <button id="copy-story-btn" class="copy-btn">📋 Copy Code</button>
+      </div>
+      <pre class="code-block" id="code-block">/* Architecting timeline scripts... */</pre>
+    </section>
+
+  </main>
+
+  <script src="scroll-story.js"></script>
+</body>
+</html>
